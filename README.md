@@ -11,7 +11,7 @@ Master autonomous flight software engineering skills as you learn about drone ro
 
 *In this program, you’ll learn from world-class experts, write aircraft-ready code, and tackle real-world challenges ranging from emergency aid to fleet coordination. You’ll master controls, planning, and more. In an increasingly congested world, flying cars look to the skies to provide smart transportation solutions that benefit us all.*
 
-### Projects I have completed
+### Projects I'm currently working on
 ## Term 1
-* Backyard Flyer - Learn how to control a drone in the simulator
+* Backyard Flyer - Learn how to control a drone in the simulator :construction:
 ## Term 2

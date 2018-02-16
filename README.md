@@ -1,7 +1,6 @@
 # Udacity Flying Car Nanodegree 
 ## Flying Cars and Autonomous Flight
-### My journey through this Nanodegree. 
-### It will be challenging. Let's hope I'll successfully finish it!
+### My journey through this Nanodegree.It will be challenging. Let's hope I'll successfully finish it!
 
 ***
 

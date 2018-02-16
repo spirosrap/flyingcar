@@ -1,8 +1,8 @@
 # Udacity Flying Car Nanodegree - Flying Cars and Autonomous Flight
 ## In this repository I'll record my journey through this Nanodegree. It will be challenging. Let's hope I'll successfully finish it!
 
-***
-### 
+
+### Basic Information about the Flying Car Nanodegree
 
 Master autonomous flight software engineering skills as you learn about drone robotics, develop sophisticated flying car systems, and write real code for real aircraft.
 

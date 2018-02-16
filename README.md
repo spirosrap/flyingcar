@@ -1,4 +1,4 @@
-# Udacity Flying Car Nanodegree - Flying Cars and Autonomous Flight
+# ![image](udacity.jpg) Udacity Flying Car Nanodegree - Flying Cars and Autonomous Flight
 ## In this repository I'll record my journey through this Nanodegree. It will be challenging. Let's hope I'll successfully finish it!
 
 

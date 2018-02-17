@@ -37,6 +37,11 @@ class BackyardFlyer(Drone):
         self.register_callback(MsgID.STATE, self.state_callback)
 
     def local_position_callback(self):
+        """
+        TODO: Implement this method
+        This triggers when `MsgID.LOCAL_POSITION` is received and self.local_position contains new data
+        """
+        
         if self.flight_state == States.TAKEOFF:
 
             # # coordinate conversion 
@@ -51,11 +56,21 @@ class BackyardFlyer(Drone):
 
 
     def velocity_callback(self):
+        """
+        TODO: Implement this method
+        This triggers when `MsgID.LOCAL_VELOCITY` is received and self.local_velocity contains new data
+        """
+        
         if self.flight_state == States.LANDING:
             if ((self.global_position[2] - self.global_home[2] < 0.1)):
                 self.disarming_transition()
 
     def state_callback(self):
+        """
+        TODO: Implement this method
+        This triggers when `MsgID.STATE` is received and self.armed and self.guided contain new data
+        """
+
         if not self.in_mission:
             return
         if self.flight_state == States.MANUAL:

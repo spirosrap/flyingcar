@@ -111,6 +111,11 @@ class BackyardFlyer(Drone):
         
 
     def landing_transition(self):
+        
+        """TODO: Fill out this method        
+        1. Command the drone to land
+        2. Transition to the LANDING state
+        """
         print("landing transition")
         self.land()
         self.flight_state = States.LANDING

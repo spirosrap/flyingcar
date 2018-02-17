@@ -76,6 +76,14 @@ class BackyardFlyer(Drone):
         return square
 
     def arming_transition(self):
+         """TODO: Fill out this method
+        
+        1. Take control of the drone
+        2. Pass an arming command
+        3. Set the home location to current position
+        4. Transition to the ARMING state
+        """
+
         print("arming transition")
         self.take_control()
         self.arm()

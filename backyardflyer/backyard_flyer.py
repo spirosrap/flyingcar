@@ -9,6 +9,7 @@ from udacidrone.connection import MavlinkConnection, WebSocketConnection  # noqa
 from udacidrone.messaging import MsgID
 
 
+
 class States(Enum):
     MANUAL = 0
     ARMING = 1
@@ -39,7 +40,7 @@ class BackyardFlyer(Drone):
     def local_position_callback(self):
         if self.flight_state == States.TAKEOFF:
 
-            # # coordinate conversion 
+            # # coordinate conversion
             # altitude = -1.0 * self.local_position[2]
 
             # # check if altitude is within 95% of target
@@ -69,7 +70,7 @@ class BackyardFlyer(Drone):
 
     def calculate_box(self):
         """TODO: Fill out this method
-        
+
         1. Return waypoints to fly a box
         """
         square = [(10,0,5,0),(10,10,5,0),(0,10,5,0),(0,0,5,0)]
@@ -96,7 +97,7 @@ class BackyardFlyer(Drone):
 
     def waypoint_transition(self):
         """TODO: Fill out this method
-    
+
         1. Command the next waypoint position
         2. Transition to WAYPOINT state
         """
@@ -108,7 +109,7 @@ class BackyardFlyer(Drone):
         self.cmd_position(w[0],w[1],w[2],w[3])
         time.sleep(4)
 
-        
+
 
     def landing_transition(self):
         print("landing transition")
@@ -122,7 +123,7 @@ class BackyardFlyer(Drone):
 
     def manual_transition(self):
         """This method is provided
-        
+
         1. Release control of the drone
         2. Stop the connection (and telemetry log)
         3. End the mission
@@ -137,7 +138,7 @@ class BackyardFlyer(Drone):
 
     def start(self):
         """This method is provided
-        
+
         1. Open a log file
         2. Start the drone connection
         3. Close the log file

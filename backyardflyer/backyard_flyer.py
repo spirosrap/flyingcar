@@ -7,8 +7,7 @@ import numpy as np
 from udacidrone import Drone
 from udacidrone.connection import MavlinkConnection, WebSocketConnection  # noqa: F401
 from udacidrone.messaging import MsgID
-
-
+import visdom
 
 class States(Enum):
     MANUAL = 0
@@ -22,7 +21,37 @@ class States(Enum):
 class BackyardFlyer(Drone):
 
     def __init__(self, connection):
+
+
+
+
+
+
         super().__init__(connection)
+
+        # default opens up to http://localhost:8097
+
+        # Plot NE
+        # self.v = visdom.Visdom()
+        # assert self.v.check_connection()
+        #
+        # ne = np.array(self.local_position[0], self.local_position[1]).reshape(-1, 2)
+        # self.ne_lot = self.v.scatter(ne, opts=dict(
+        #     title="Local position (north, east)",
+        #     xlabel='North',
+        #     ylabel='East'
+        # ))
+        #
+        # # Plot D
+        # d = np.array(self.local_position[2])
+        # self.t = 1
+        # self.d_plot = self.v.line(d, X=np.array(self.t), opts=dict(
+        #     title="Altitude (meters)",
+        #     xlabel='Timestep',
+        #     ylabel='Down'
+        # ))
+
+
         self.target_position = np.array([0.0, 0.0, 0.0])
         self.all_waypoints = self.calculate_box()
         self.waypoint = 4
@@ -36,20 +65,34 @@ class BackyardFlyer(Drone):
         self.register_callback(MsgID.LOCAL_POSITION, self.local_position_callback)
         self.register_callback(MsgID.LOCAL_VELOCITY, self.velocity_callback)
         self.register_callback(MsgID.STATE, self.state_callback)
+        # self.register_callback(MsgID.LOCAL_POSITION, self.update_ne_plot)
+        # self.register_callback(MsgID.LOCAL_POSITION, self.update_d_plot)
+
+    def update_ne_plot(self):
+        ne = np.array([self.local_position[0], self.local_position[1]]).reshape(-1, 2)
+        self.v.scatter(ne, win=self.ne_plot, update='append')
+
+    def update_d_plot(self):
+        d = np.array([self.local_position[2]])
+        # update timestep
+        self.t += 1
+        self.v.line(d, X=np.array([self.t]), win=self.d_plot, update='append')
 
     def local_position_callback(self):
+        altitude = -1.0 * self.local_position[2]
         if self.flight_state == States.TAKEOFF:
 
-            # # coordinate conversion
-            # altitude = -1.0 * self.local_position[2]
+            # coordinate conversion
 
-            # # check if altitude is within 95% of target
-            # if altitude > 0.95 * self.target_position[2]:
-            #     self.landing_transition()
-            self.waypoint_transition()
+            # check if altitude is within 95% of target
+            print(self.local_velocity)
+            print(self.target_position)
+            print(self.local_position)
+            #cmd_position(north, east, altitude, heading)
+            if altitude > 0.95 * self.target_position[2]: #and self.target_position[0] > 0.95* self.local_position[0]and self.target_position[1] > 0.95* self.local_position[1]
+                self.waypoint_transition()
         elif self.flight_state == States.LANDING:
             self.landing_transition()
-
 
     def velocity_callback(self):
         if self.flight_state == States.LANDING:
@@ -73,14 +116,18 @@ class BackyardFlyer(Drone):
 
         1. Return waypoints to fly a box
         """
-        square = [(10,0,5,0),(10,10,5,0),(0,10,5,0),(0,0,5,0)]
+        square = [(10,0,3,0),(10,10,3,0),(0,10,3,0),(0,0,3,0)]
         return square
 
     def arming_transition(self):
         print("arming transition")
         self.take_control()
         self.arm()
-
+        # # begin ADDED code
+        # if self.global_position[0] == 0.0 and self.global_position[1] == 0.0:
+        #     print("no global position data, wait")
+        #     return
+        # #end ADDED code
         # set the current location to be the home position
         self.set_home_position(self.global_position[0],
                                self.global_position[1],
@@ -92,6 +139,8 @@ class BackyardFlyer(Drone):
         print("takeoff transition")
         target_altitude = 3.0
         self.target_position[2] = target_altitude
+        self.target_position[0] = 0
+        self.target_position[1] = 0
         self.takeoff(target_altitude)
         self.flight_state = States.TAKEOFF
 
@@ -102,12 +151,26 @@ class BackyardFlyer(Drone):
         2. Transition to WAYPOINT state
         """
         self.flight_state = States.WAYPOINT
-        self.waypoint -= 1
-        if self.waypoint == -1:
-            self.flight_state = States.LANDING
-        w = self.all_waypoints[self.waypoint]
-        self.cmd_position(w[0],w[1],w[2],w[3])
-        time.sleep(4)
+        altitude = -1.0 * self.local_position[2]
+
+        #cmd_position(north, east, altitude, heading)
+        print(self.local_position)
+        print(self.target_position)
+        if altitude > 0.95 * self.target_position[2] and abs(self.local_position[0] - self.target_position[0]) <0.5 and abs(self.local_position[1] - self.target_position[1]) <0.3:
+            self.waypoint -= 1
+            print("waypoint",self.waypoint)
+            if self.waypoint < -1:
+                self.flight_state = States.LANDING
+                return
+            else:
+                w = self.all_waypoints[self.waypoint]
+                self.target_position[0] = w[0]
+                self.target_position[1] = w[1]
+
+            self.cmd_position(self.target_position[0],self.target_position[1],self.target_position[2],0)
+
+
+        # time.sleep(4)
 
 
 
@@ -154,6 +217,8 @@ class BackyardFlyer(Drone):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=5760, help='Port number')
+    parser.add_argument('--visdom', type=bool, default=True, help='visdom server')
+
     parser.add_argument('--host', type=str, default='127.0.0.1', help="host address, i.e. '127.0.0.1'")
     args = parser.parse_args()
 

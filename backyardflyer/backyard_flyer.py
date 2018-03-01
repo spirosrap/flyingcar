@@ -22,34 +22,30 @@ class BackyardFlyer(Drone):
 
     def __init__(self, connection):
 
-
-
-
-
-
         super().__init__(connection)
 
         # default opens up to http://localhost:8097
+        self.v = visdom.Visdom()
+        assert self.v.check_connection()
 
         # Plot NE
-        # self.v = visdom.Visdom()
-        # assert self.v.check_connection()
-        #
-        # ne = np.array(self.local_position[0], self.local_position[1]).reshape(-1, 2)
-        # self.ne_lot = self.v.scatter(ne, opts=dict(
-        #     title="Local position (north, east)",
-        #     xlabel='North',
-        #     ylabel='East'
-        # ))
-        #
-        # # Plot D
-        # d = np.array(self.local_position[2])
-        # self.t = 1
-        # self.d_plot = self.v.line(d, X=np.array(self.t), opts=dict(
-        #     title="Altitude (meters)",
-        #     xlabel='Timestep',
-        #     ylabel='Down'
-        # ))
+        ne = np.array((self.local_position[0], self.local_position[1])).reshape(-1, 2)
+
+        self.n_plot = self.v.scatter(ne, opts=dict(
+            title="Local position (north, east)",
+            xlabel='North',
+            ylabel='East'
+        ))
+
+        # Plot D
+        d = np.array([self.local_position[2]])
+
+        self.t = np.array([1])
+        self.d_plot = self.v.line(d, X=np.array(self.t), opts=dict(
+            title="Altitude (meters)",
+            xlabel='Timestep',
+            ylabel='Down'
+        ))
 
 
         self.target_position = np.array([0.0, 0.0, 0.0])
@@ -65,18 +61,18 @@ class BackyardFlyer(Drone):
         self.register_callback(MsgID.LOCAL_POSITION, self.local_position_callback)
         self.register_callback(MsgID.LOCAL_VELOCITY, self.velocity_callback)
         self.register_callback(MsgID.STATE, self.state_callback)
-        # self.register_callback(MsgID.LOCAL_POSITION, self.update_ne_plot)
-        # self.register_callback(MsgID.LOCAL_POSITION, self.update_d_plot)
+        self.register_callback(MsgID.LOCAL_POSITION, self.update_ne_plot)
+        self.register_callback(MsgID.LOCAL_POSITION, self.update_d_plot)
 
     def update_ne_plot(self):
-        ne = np.array([self.local_position[0], self.local_position[1]]).reshape(-1, 2)
-        self.v.scatter(ne, win=self.ne_plot, update='append')
+        ne = np.array((self.local_position[0], self.local_position[1])).reshape(-1, 2)
+        self.v.scatter(ne, win=self.n_plot, update='append')
 
     def update_d_plot(self):
         d = np.array([self.local_position[2]])
         # update timestep
-        self.t += 1
-        self.v.line(d, X=np.array([self.t]), win=self.d_plot, update='append')
+        self.t += np.array([1])
+        self.v.line(d, X=self.t, win=self.d_plot, update='append')
 
     def local_position_callback(self):
         altitude = -1.0 * self.local_position[2]

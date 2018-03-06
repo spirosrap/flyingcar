@@ -13,5 +13,6 @@ Master autonomous flight software engineering skills as you learn about drone ro
 
 ### Projects I'm currently working on
 ## Term 1
-* Backyard Flyer - Learn how to control a drone  :heavy_check_mark:
+* P1:Backyard Flyer - Learn how to control a drone  :heavy_check_mark:
+* P2:3D Motion Planning - Learn how to control a drone in a complex urban environment :construction:
 ## Term 2

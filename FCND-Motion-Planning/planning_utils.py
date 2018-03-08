@@ -1,7 +1,7 @@
 from enum import Enum
 from queue import PriorityQueue
 import numpy as np
-
+from math import sqrt
 
 def create_grid(data, drone_altitude, safety_distance):
     """
@@ -56,7 +56,11 @@ class Action(Enum):
     """
 
     WEST = (0, -1, 1)
+    NORTHWEST = (-1, -1, sqrt(2))
+    SOUTHWEST = (1, -1, sqrt(2))
     EAST = (0, 1, 1)
+    NORTHEAST = (-1,1,sqrt(2))
+    SOUTHEAST = (1,1,sqrt(2))
     NORTH = (-1, 0, 1)
     SOUTH = (1, 0, 1)
 
@@ -88,6 +92,14 @@ def valid_actions(grid, current_node):
         valid_actions.remove(Action.WEST)
     if y + 1 > m or grid[x, y + 1] == 1:
         valid_actions.remove(Action.EAST)
+    if x - 1 < 0 or y - 1 < 0 or grid[x - 1, y - 1] == 1:
+        valid_actions.remove(Action.NORTHWEST)
+    if x + 1 > n or y - 1 < 0 or grid[x + 1, y - 1] == 1:
+        valid_actions.remove(Action.SOUTHWEST)
+    if x - 1 < 0 or y + 1 > m or grid[x - 1, y + 1] == 1:
+        valid_actions.remove(Action.NORTHEAST)
+    if x + 1 > n or y + 1 > m or grid[x + 1, y + 1] == 1:
+        valid_actions.remove(Action.SOUTHEAST)
 
     return valid_actions
 
@@ -140,9 +152,8 @@ def a_star(grid, h, start, goal):
     else:
         print('**********************')
         print('Failed to find a path!')
-        print('**********************') 
+        print('**********************')
     return path[::-1], path_cost
 
 def heuristic(position, goal_position):
     return np.linalg.norm(np.array(position) - np.array(goal_position))
-

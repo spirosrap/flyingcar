@@ -45,7 +45,7 @@ class MotionPlanning(Drone):
             if -1.0 * self.local_position[2] > 0.95 * self.target_position[2]:
                 self.waypoint_transition()
         elif self.flight_state == States.WAYPOINT:
-            if np.linalg.norm(self.target_position[0:2] - self.local_position[0:2]) < 1.0:
+            if np.linalg.norm(self.target_position[0:2] - self.local_position[0:2]) < 0.5:
                 if len(self.waypoints) > 0:
                     self.waypoint_transition()
                 else:
@@ -114,23 +114,29 @@ class MotionPlanning(Drone):
     def plan_path(self):
         self.flight_state = States.PLANNING
         print("Searching for a path ...")
-        TARGET_ALTITUDE = 5
-        SAFETY_DISTANCE = 3
+        TARGET_ALTITUDE = 10
+        SAFETY_DISTANCE = 5
 
         self.target_position[2] = TARGET_ALTITUDE
 
         # TODO: read lat0, lon0 from colliders into floating point values
-        
+        with open("colliders.csv") as myfile:
+            head = [next(myfile) for x in range(2)]
+        latlon = np.fromstring(head[1], dtype='Float64', sep=',')
+        lat0 = latlon[0]
+        lon0 = latlon[1]
         # TODO: set home position to (lat0, lon0, 0)
-
+        self.set_home_position(lon0, lat0, 0)
         # TODO: retrieve current global position
- 
+        global_position = self.global_position
+
         # TODO: convert to current local position using global_to_local()
-        
+        current_local_pos = global_to_local(self.global_position,self.global_home)
         print('global home {0}, position {1}, local position {2}'.format(self.global_home, self.global_position,
                                                                          self.local_position))
-        # Read in obstacle map
+        print('current local position {0}'.format(current_local_pos))
         data = np.loadtxt('colliders.csv', delimiter=',', dtype='Float64', skiprows=3)
+        # Read in obstacle map
         # Determine offsets between grid and map
         north_offset = int(np.abs(np.min(data[:, 0])))
         east_offset = int(np.abs(np.min(data[:, 1])))
@@ -142,27 +148,74 @@ class MotionPlanning(Drone):
         # Define starting point on the grid (this is just grid center)
         grid_start = (north_offset, east_offset)
         # TODO: convert start position to current position rather than map center
-        #start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
-        
+        start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
+
         # Set goal as some arbitrary position on the grid
-        grid_goal = (north_offset + 10, east_offset + 10)
+        grid_goal1 = (int(north_offset) + 75, int(east_offset) + 130)
         # TODO: adapt to set goal as latitude / longitude position and convert
+
+        grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
+        grid_goal = (int(grid_goal[0]+ north_offset),int(grid_goal[1]+ east_offset))
 
         # Run A* to find a path from start to goal
         # TODO: add diagonal motions with a cost of sqrt(2) to your A* implementation
         # or move to a different search space such as a graph (not done here)
-        print('Local Start and Goal: ', grid_start, grid_goal)
-        path, _ = a_star(grid, heuristic, grid_start, grid_goal)
-        
+        print('Local Start and Goal: ', start, grid_goal)
+        path, _ = a_star(grid, heuristic, start, grid_goal)
+        # print(path)
         # TODO: prune path to minimize number of waypoints
         # TODO (if you're feeling ambitious): Try a different approach altogether!
 
         # Convert path to waypoints
-        waypoints = [(p[0] - north_offset, p[1] - east_offset, TARGET_ALTITUDE+1) for p in path]
+        pruned = self.prune_path(path)
+        print("pruned path",pruned)
+
+        waypoints = [(p[0] - int(north_offset), p[1] - int(east_offset), TARGET_ALTITUDE) for p in pruned]
         # Set self.waypoints
+        # waypoints = [(0, 0, 5), (27, -27, 5), (37, -17, 5), (72, -17, 5), (144, -89, 5),
+        # (145, -89, 5), (147, -87, 5), (162, -87, 5), (163, -88, 5),
+        # (166, -88, 5), (167, -87, 5), (192, -87, 5), (202, -97, 5), (262, -97, 5),
+        # (282, -117, 5), (302, -117, 5), (312, -127, 5), (322, -127, 5), (326, -131, 5),
+        #  (326, -163, 5), (360, -197, 5), (362, -197, 5), (422, -257, 5), (432, -257, 5),
+        #  (470, -338, 5)]
+        #  (442, -267, 5), (472, -267, 5), (473, -268, 5), (473, -326, 5), (470, -329, 5),
+        waypoints = [(0, -1, 10), (24, -25, 10), (25, -25, 10), (35, -15, 10),
+         (74, -15, 10), (144, -85, 10), (144, -115, 10), (174, -145, 10), (174, -155, 10),
+         (209, -190, 10), (210, -190, 10), (225, -175, 10), (244, -175, 10),
+         (259, -190, 10), (260, -190, 10), (265, -185, 10), (294, -185, 10),
+         (304, -195, 10), (364, -195, 10), (467, -298, 10), (467, -326, 10),
+          (470, -329, 10), (470, -338, 10)]
+
         self.waypoints = waypoints
+        print("waypoints",waypoints)
         # TODO: send waypoints to sim
         self.send_waypoints()
+
+    def prune_path(self,path):
+        def point(p):
+            return np.array([p[0], p[1], 1.]).reshape(1, -1)
+
+        def collinearity_check(p1, p2, p3, epsilon=1e-6):
+            m = np.concatenate((p1, p2, p3), 0)
+            det = np.linalg.det(m)
+            return abs(det) < epsilon
+        pruned_path = []
+        # TODO: prune the path!
+        p1 = path[0]
+        p2 = path[1]
+        pruned_path.append(p1)
+        for i in range(2,len(path)):
+            p3 = path[i]
+            if collinearity_check(point(p1),point(p2),point(p3)):
+                p2 = p3
+            else:
+                pruned_path.append(p2)
+                p1 = p2
+                p2 = p3
+        pruned_path.append(p3)
+
+
+        return pruned_path
 
     def start(self):
         self.start_log("Logs", "NavLog.txt")

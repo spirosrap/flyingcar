@@ -1,18 +1,6 @@
 ## Project: 3D Motion Planning
-![Quad Image](./misc/enroute.png)
-
----
 
 
-# Required Steps for a Passing Submission:
-1. Load the 2.5D map in the colliders.csv file describing the environment.
-2. Discretize the environment into a grid or graph representation.
-3. Define the start and goal locations.
-4. Perform a search using A* or other search algorithm.
-5. Use a collinearity test or ray tracing method (like Bresenham) to remove unnecessary waypoints.
-6. Return waypoints in local ECEF coordinates (format for `self.all_waypoints` is [N, E, altitude, heading], where the drone’s start location corresponds to [0, 0, 0, 0].
-7. Write it up.
-8. Congratulations!  Your Done!
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1534/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -36,42 +24,157 @@ Like in the `backyardflyer` project I have completed the `motion_planning.py`  c
 
 #### 1. Set your global home position
 
-**Default Goal Location
-Local Start and Goal:  (305, 434) (775, 97)**
+Starting the motion planner program first saves the central location as:
+`
+lat0,lon0
+37.792480,-122.397450
+`
+In which it is then decoded in the in a local location. This is done in the following part:
 
-Here students should read the first line of the csv file, extract lat0 and lon0 as floating point values and use the self.set_home_position() method to set global home. Explain briefly how you accomplished this in your code.
+```
+        with open("colliders.csv") as myfile:
+            head = [next(myfile) for x in range(2)]
+        latlon = np.fromstring(head[1], dtype='Float64', sep=',')
+        lat0 = latlon[0]
+        lon0 = latlon[1]
+        # TODO: set home position to (lat0, lon0, 0)
+        self.set_home_position(lon0, lat0, 0)
+```
+
+I read the csv file twice because the file includes two formats (different columnson each one).
 
 
-And here is a lovely picture of our downtown San Francisco environment from above!
-![Map of SF](./misc/map.png)
+This is where the drone starts in the simulator:
+![Map of SF](start.png)
 
 #### 2. Set your current local position
-Here as long as you successfully determine your local position relative to global home you'll be all set. Explain briefly how you accomplished this in your code.
 
+I set the local position relative to the global home position using the following line:
 
-Meanwhile, here's a picture of me flying through the trees!
-![Forest Flying](./misc/in_the_trees.png)
+```
+current_local_pos = global_to_local(self.global_position,self.global_home)
+```
+
+I have previously set the home position in the line:
+
+```
+self.set_home_position(lon0, lat0, 0)
+```
+The lan0 and lat0 where retrieved from the `.csv`.
+
 
 #### 3. Set grid start position from local position
 This is another step in adding flexibility to the start location. As long as it works you're good to go!
 
+I set the grid start position in the line:
+
+```
+start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
+```
+
+I have taken into account the north at east offset on the map to find the place in the grid.
+
 #### 4. Set grid goal position from geodetic coords
-This step is to add flexibility to the desired goal location. Should be able to choose any (lat, lon) within the map and have it rendered to a goal location on the grid.
+
+The goal is set using the two lines:
+
+```
+grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
+grid_goal = (int(grid_goal[0]+ north_offset),int(grid_goal[1]+ east_offset))
+```
+
+As you can see the input is geodetic coordinates `(-122.401247,37.796738,0)` from which I retrieve the local coordinates using `global_to_local`. The user can also select their goal from running the script with:
+
+
+```
+python motion_planning.py --lat 37.796738 --lon -122.401247
+```
+
+This was done by adding two arguments:
+```
+    parser.add_argument('--lat', type=float, default=1000, help="latitude")
+    parser.add_argument('--lon', type=float, default=1000, help="latitude")
+```
 
 #### 5. Modify A* to include diagonal motion (or replace A* altogether)
-Minimal requirement here is to modify the code in planning_utils() to update the A* implementation to include diagonal motions on the grid that have a cost of sqrt(2), but more creative solutions are welcome. Explain the code you used to accomplish this step.
+
+I have modified the selection of next moves in the A* to include diagonal motions:
+
+The actions includes four new ones (diagonal) with cost `sqrt(2)`:
+```
+    NORTHWEST = (-1, -1, 1.41421)
+    SOUTHWEST = (1, -1, 1.41421)
+    NORTHEAST = (-1,1,1.41421)
+    SOUTHEAST = (1,1,1.41421)
+```
+
+and in the `valid_actions` I have added:
+
+```
+    if x - 1 < 0 or y - 1 < 0 or grid[x - 1, y - 1] == 1:
+        valid_actions.remove(Action.NORTHWEST)
+    if x + 1 > n or y - 1 < 0 or grid[x + 1, y - 1] == 1:
+        valid_actions.remove(Action.SOUTHWEST)
+    if x - 1 < 0 or y + 1 > m or grid[x - 1, y + 1] == 1:
+        valid_actions.remove(Action.NORTHEAST)
+    if x + 1 > n or y + 1 > m or grid[x + 1, y + 1] == 1:
+        valid_actions.remove(Action.SOUTHEAST)
+```
+
 
 #### 6. Cull waypoints
-For this step you can use a collinearity test or ray tracing method like Bresenham. The idea is simply to prune your path of unnecessary waypoints. Explain the code you used to accomplish this step.
+
+I used collinearity to prune the path. The prunning algorithm looks like this:
+
+```
+    def prune_path(self,path):
+        def point(p):
+            return np.array([p[0], p[1], 1.]).reshape(1, -1)
+
+        def collinearity_check(p1, p2, p3, epsilon=1e-6):
+            m = np.concatenate((p1, p2, p3), 0)
+            det = np.linalg.det(m)
+            return abs(det) < epsilon
+            
+        pruned_path = []
+        # TODO: prune the path!
+        p1 = path[0]
+        p2 = path[1]
+        pruned_path.append(p1)
+        for i in range(2,len(path)):
+            p3 = path[i]
+            if collinearity_check(point(p1),point(p2),point(p3)):
+                p2 = p3
+            else:
+                pruned_path.append(p2)
+                p1 = p2
+                p2 = p3
+        pruned_path.append(p3)
+
+
+        return pruned_path
+```
+
+In collinearity I select continuous groups of points and (3) to see if the belong in a line or close to a line. If they can be connected to a line I replace the two waypoints with a single on (longer) and continue the search to see if I can add more way points to the same line. With this change I managed to have a relatievely smooth route:
+
+![img](path.png)
+
+
 
 
 
 ### Execute the flight
 #### 1. Does it work?
-It works!
+I tried the suggested location of ` (longitude = -122.402224, latitude = 37.797330)` and the drone guided itself into it. To go back just run from there:
 
-### Double check that you've met specifications for each of the [rubric](https://review.udacity.com/#!/rubrics/1534/view) points.
+```
+python motion_planning.py --lat 37.792480 --lon -122.397450
+```
 
-# Extra Challenges: Real World Planning
+You can run any location you like from there using the parameters `lat,lon`.
+
+### Extra Challenges: Real World Planning 
+
+I did not yet attempt any challenges but I plan to do later in the course.
 
 For an extra challenge, consider implementing some of the techniques described in the "Real World Planning" lesson. You could try implementing a vehicle model to take dynamic constraints into account, or implement a replanning method to invoke if you get off course or encounter unexpected obstacles.

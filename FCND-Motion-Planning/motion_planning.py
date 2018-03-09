@@ -239,7 +239,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    conn = MavlinkConnection('tcp:{0}:{1}'.format(args.host, args.port),timeout=30)
+    conn = MavlinkConnection('tcp:{0}:{1}'.format(args.host, args.port),timeout=40)
     drone = MotionPlanning(conn)
     time.sleep(1)
 

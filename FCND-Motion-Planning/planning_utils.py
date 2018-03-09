@@ -56,11 +56,11 @@ class Action(Enum):
     """
 
     WEST = (0, -1, 1)
-    NORTHWEST = (-1, -1, sqrt(2))
-    SOUTHWEST = (1, -1, sqrt(2))
+    NORTHWEST = (-1, -1, 1.41421)
+    SOUTHWEST = (1, -1, 1.41421)
     EAST = (0, 1, 1)
-    NORTHEAST = (-1,1,sqrt(2))
-    SOUTHEAST = (1,1,sqrt(2))
+    NORTHEAST = (-1,1,1.41421)
+    SOUTHEAST = (1,1,1.41421)
     NORTH = (-1, 0, 1)
     SOUTH = (1, 0, 1)
 

@@ -32,20 +32,24 @@ First, A* is an algorithm that searches for a path(or paths) in a search space t
 * `NORTHEAST`
 * `SOUTHEAST`
 
-with a cost of `sqrt(2)`. I also had to change the method `valid_actions()` so that the algorithm can remove the costly diagonal actions of `sqrt(2)` and prefer the less costly straight of `1`. To do this I added the 4 lines below:
+with a cost of `sqrt(2)`. I also had to change the method `valid_actions()` so that the algorithm can remove the costly diagonal actions of `sqrt(2)` (see pythagorean theorem) and prefer the less costly straight of `1`. To do this I added the 4 lines below:
 
 ```
-    if x - 1 < 0 or y - 1 < 0 or grid[x - 1, y - 1] == 1:
+    if (x - 1 < 0 and y - 1 < 0) or grid[x - 1, y - 1] == 1:
         valid_actions.remove(Action.NORTHWEST)
-    if x + 1 > n or y - 1 < 0 or grid[x + 1, y - 1] == 1:
+    if (x + 1 > n and y - 1 < 0) or grid[x + 1, y - 1] == 1:
         valid_actions.remove(Action.SOUTHWEST)
-    if x - 1 < 0 or y + 1 > m or grid[x - 1, y + 1] == 1:
+    if (x - 1 < 0 and y + 1 > m) or grid[x - 1, y + 1] == 1:
         valid_actions.remove(Action.NORTHEAST)
-    if x + 1 > n or y + 1 > m or grid[x + 1, y + 1] == 1:
+    if (x + 1 > n and y + 1 > m) or grid[x + 1, y + 1] == 1:
         valid_actions.remove(Action.SOUTHEAST)
 ```
 
+Since if we are on a cell on a grid there are available 8 actions (4 additional diagonal ones), I should be able to remove them if they're invalid. And they are invalid if they contain an obstacle or are beyond the available grid.
 
+I used this table below to help me complete the code:
+
+![img](grid.jpg)
 
 
 ### Implementing Your Path Planning Algorithm
@@ -146,13 +150,13 @@ The actions includes four new ones (diagonal) with cost `sqrt(2)`:
 and in the `valid_actions` I have added:
 
 ```
-    if x - 1 < 0 or y - 1 < 0 or grid[x - 1, y - 1] == 1:
+    if (x - 1 < 0 and y - 1 < 0) or grid[x - 1, y - 1] == 1:
         valid_actions.remove(Action.NORTHWEST)
-    if x + 1 > n or y - 1 < 0 or grid[x + 1, y - 1] == 1:
+    if (x + 1 > n and y - 1 < 0) or grid[x + 1, y - 1] == 1:
         valid_actions.remove(Action.SOUTHWEST)
-    if x - 1 < 0 or y + 1 > m or grid[x - 1, y + 1] == 1:
+    if (x - 1 < 0 and y + 1 > m) or grid[x - 1, y + 1] == 1:
         valid_actions.remove(Action.NORTHEAST)
-    if x + 1 > n or y + 1 > m or grid[x + 1, y + 1] == 1:
+    if (x + 1 > n and y + 1 > m) or grid[x + 1, y + 1] == 1:
         valid_actions.remove(Action.SOUTHEAST)
 ```
 

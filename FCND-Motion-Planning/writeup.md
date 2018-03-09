@@ -19,6 +19,35 @@ You're reading it! Below I describe how I addressed each rubric point and where 
 
 Like in the `backyardflyer` project the `motion_planning.py`  contains the main code that will plan run the commmands to guide the drone. The programming paradigm in which the program is written doesn't rely on time to schedule the path of the drone but on event programming. There are several distinct events like "Take Off", "Landing", "Arming", etc. The program takes care the sequence of these events so that the it is still responsive if ,while it's moving, there's an unexpected obstacle. Also, the program is responsible for calling the planning function so that it can find a path between a starting and a goal location. Finding a path is done using a modified version of the `a_star` algorithm that it is defined in `planning_utils.py`. I have also included diagonal movements beyond what was provided in the starter code as this was a requirement (method `valid_actions()`.
 
+#### 1.1 Minimal requirement is to modify the code in `planning_utils()` to update the A* implementation to include diagonal motions on the grid that have a cost of `sqrt(2)`, but more creative solutions are welcome. Explain the code you used to accomplish this step.
+
+I'm adding this new paragraph to address the comment of the reviewer:
+
+>The A* has been updated, well done. Please add some explanation here.
+
+First, A* is an algorithm that searches for a path(or paths) in a search space that has the minimal cost. This is done by continuously visiting nearby nodes but the ones that are closer to the goal given an estimate (heuristic). So, the A* star algorithm searches for a path to connect the initial position of the drone (start) to the goal position. The A* algorithm works on the 3D grid of a map and tries to find connections of a point on the grid to the next until the end goal. Without the modification I have added to the `valid_actions()` the path that the algorithm finds contains many zig-zag movements. It connects two points through a third by forming a triangle. However, if we set the cost of the diagonal movement to `sqrt(2)` the algorithm will always choose the less costly one connecting the two points that is a straight line with a cost of just `1`.  To apply this, I had to change the `Action` class to include the 4 diagonal actions:
+
+* `NORTHWEST`
+* `SOUTHWEST`
+* `NORTHEAST`
+* `SOUTHEAST`
+
+with a cost of `sqrt(2)`. I also had to change the method `valid_actions()` so that the algorithm can remove the costly diagonal actions of `sqrt(2)` and prefer the less costly straight of `1`. To do this I added the 4 lines below:
+
+```
+    if x - 1 < 0 or y - 1 < 0 or grid[x - 1, y - 1] == 1:
+        valid_actions.remove(Action.NORTHWEST)
+    if x + 1 > n or y - 1 < 0 or grid[x + 1, y - 1] == 1:
+        valid_actions.remove(Action.SOUTHWEST)
+    if x - 1 < 0 or y + 1 > m or grid[x - 1, y + 1] == 1:
+        valid_actions.remove(Action.NORTHEAST)
+    if x + 1 > n or y + 1 > m or grid[x + 1, y + 1] == 1:
+        valid_actions.remove(Action.SOUTHEAST)
+```
+
+
+
+
 ### Implementing Your Path Planning Algorithm
 
 #### 1. Set your global home position

@@ -25,7 +25,7 @@ I'm adding this new paragraph to address the comment of the reviewer:
 
 >The A* has been updated, well done. Please add some explanation here.
 
-First, A* is an algorithm that searches for a path(or paths) in a search space that has the minimal cost. This is done by continuously visiting nearby nodes but the ones that are closer to the goal given an estimate (heuristic). So, the A* star algorithm searches for a path to connect the initial position of the drone (start) to the goal position. The A* algorithm works on the 3D grid of a map and tries to find connections of a point on the grid to the next until the end goal. Without the modification I have added to the `valid_actions()` the path that the algorithm finds contains many zig-zag movements. It connects two points through a third by forming a triangle. However, if we set the cost of the diagonal movement to `sqrt(2)` the algorithm will always choose the less costly one connecting the two points that is a straight line with a cost of just `1`.  To apply this, I had to change the `Action` class to include the 4 diagonal actions:
+First, A* is an algorithm that searches for a path(or paths) in a search space that has the minimal cost. This is done by continuously visiting nearby nodes but the ones that are closer to the goal given an estimate (heuristic). So, the A* star algorithm searches for a path to connect the initial position of the drone (start) to the goal position. The A* algorithm works on the 3D grid of a map and tries to find connections of a point on the grid to the next until the end goal. Without the modification I have added to the `valid_actions()` the path that the algorithm finds contains many [zig-zag](https://en.wikipedia.org/wiki/Zigzag) (diagonal) movements. It connects two points through a third by forming a triangle. However, if we set the cost of the diagonal movement to `sqrt(2)` the algorithm will always choose the less costly one connecting the two points in a straight line with a cost of just `1`.  To apply this, I had to change the `Action` class to include the 4 new diagonal actions:
 
 * `NORTHWEST`
 * `SOUTHWEST`
@@ -47,9 +47,11 @@ with a cost of `sqrt(2)`. I also had to change the method `valid_actions()` so t
 
 Since if we are on a cell on a grid there are available 8 actions (4 additional diagonal ones), I should be able to remove them if they're invalid. And they are invalid if they contain an obstacle or are beyond the available grid.
 
-I used this table below to help me complete the code:
+I used this table below to help me complete the code (we're in the position `(0,0)`):
 
 ![img](grid.jpg)
+
+For example to remove the `SOUTHEAST` point, notice that it is the `1,1` on the scheme above. So if in the `grid[x+1,y+1] = 1` is an obstacle OR if that position is out of the available map, I remove this action.
 
 
 ### Implementing Your Path Planning Algorithm

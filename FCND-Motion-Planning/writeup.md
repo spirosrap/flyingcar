@@ -155,7 +155,7 @@ I used collinearity to prune the path. The prunning algorithm looks like this:
         return pruned_path
 ```
 
-In collinearity I select continuous groups of points and (3) to see if the belong in a line or close to a line. If they can be connected to a line I replace the two waypoints with a single on (longer) and continue the search to see if I can add more way points to the same line. With this change I managed to have a relatievely smooth route:
+In collinearity I select continuous groups of points and (3) to see if the belong in a line or close to a line. If they can be connected to a line I replace the two waypoints with a single on (longer) and continue the search to see if I can add more way points to the same line. With this change I managed to have a relatively smooth route:
 
 ![img](path.png)
 

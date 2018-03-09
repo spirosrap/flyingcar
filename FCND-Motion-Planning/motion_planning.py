@@ -195,7 +195,7 @@ class MotionPlanning(Drone):
         def point(p):
             return np.array([p[0], p[1], 1.]).reshape(1, -1)
 
-        def collinearity_check(p1, p2, p3, epsilon=1e-6):
+        def collinearity_check(p1, p2, p3, epsilon=0.1):
             m = np.concatenate((p1, p2, p3), 0)
             det = np.linalg.det(m)
             return abs(det) < epsilon

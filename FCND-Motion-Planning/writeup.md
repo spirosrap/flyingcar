@@ -181,7 +181,7 @@ python motion_planning.py --lat 37.792480 --lon
  -122.397450
 ```
 
-You can run any location you like by using the parameters `lat,lon`.
+You can run any location you like by using the parameters `lat,lon` .
 
 **Also**, note that the planning search takes more than 5 seconds which is the default time out limit. I changed the time out to `40` seconds:
 

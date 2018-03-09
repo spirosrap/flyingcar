@@ -16,9 +16,8 @@ You're reading it! Below I describe how I addressed each rubric point and where 
 
 #### 1. Explain the functionality of what's provided in `motion_planning.py` and `planning_utils.py`
 
-**About `motion_planning.py`**
 
-Like in the `backyardflyer` project I have completed the `motion_planning.py`  contains the main code that will plan run the commmands to guide the drone. The programming paradigm in which the program is written doesn't rely on time to schedule the path of the drone but on event programming. There are several distinct events like "Take Off", "Landing", "Arming", etc. The program takes care the sequence of these events so that the it is still responsive if ,while it's moving, there's an unexpected obstacle. Also, the program is responsible for calling the planning function so that it can find a path between a starting and a goal location. Finding a path is done using a modified version of the `a_star` algorithm that it is defined in `planning_utils.py`. I have also included diagonal movements beyond what was provided in the starter code as this was a requirement (method `valid_actions()`.
+Like in the `backyardflyer` project the `motion_planning.py`  contains the main code that will plan run the commmands to guide the drone. The programming paradigm in which the program is written doesn't rely on time to schedule the path of the drone but on event programming. There are several distinct events like "Take Off", "Landing", "Arming", etc. The program takes care the sequence of these events so that the it is still responsive if ,while it's moving, there's an unexpected obstacle. Also, the program is responsible for calling the planning function so that it can find a path between a starting and a goal location. Finding a path is done using a modified version of the `a_star` algorithm that it is defined in `planning_utils.py`. I have also included diagonal movements beyond what was provided in the starter code as this was a requirement (method `valid_actions()`.
 
 ### Implementing Your Path Planning Algorithm
 
@@ -41,7 +40,7 @@ In which it is then decoded in the in a local location. This is done in the foll
         self.set_home_position(lon0, lat0, 0)
 ```
 
-I read the csv file twice because the file includes two formats (different columnson each one).
+I read the csv file twice because the file includes two formats (different columns on each one).
 
 
 This is where the drone starts in the simulator:
@@ -60,7 +59,7 @@ I have previously set the home position in the line:
 ```
 self.set_home_position(lon0, lat0, 0)
 ```
-The lan0 and lat0 where retrieved from the `.csv`.
+The lan0 and lat0 where retrieved from the `.csv` file.
 
 
 #### 3. Set grid start position from local position
@@ -69,10 +68,11 @@ This is another step in adding flexibility to the start location. As long as it 
 I set the grid start position in the line:
 
 ```
-start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
+start = (int(current_local_pos[0]+north_offset),
+int(current_local_pos[1]+east_offset))
 ```
 
-I have taken into account the north at east offset on the map to find the place in the grid.
+I have taken into account the north and east offset on the map to find the place in the grid.
 
 #### 4. Set grid goal position from geodetic coords
 
@@ -83,17 +83,21 @@ grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
 grid_goal = (int(grid_goal[0]+ north_offset),int(grid_goal[1]+ east_offset))
 ```
 
-As you can see the input is geodetic coordinates `(-122.401247,37.796738,0)` from which I retrieve the local coordinates using `global_to_local`. The user can also select their goal from running the script with:
+As you can see the input is in geodetic coordinates `(-122.401247,37.796738,0)` from which I retrieve the local coordinates using `global_to_local`. The user can also select their goal from running the script with arguments s:
 
 
 ```
-python motion_planning.py --lat 37.796738 --lon -122.401247
+python motion_planning.py --lat 37.796738 --lon
+-122.401247
 ```
 
 This was done by adding two arguments:
 ```
-    parser.add_argument('--lat', type=float, default=1000, help="latitude")
-    parser.add_argument('--lon', type=float, default=1000, help="latitude")
+parser.add_argument('--lat', type=float, default=1000, help="latitude")
+```
+```
+parser.add_argument('--lon', type=float, 
+    default=1000, help="latitude")
 ```
 
 #### 5. Modify A* to include diagonal motion (or replace A* altogether)
@@ -101,12 +105,14 @@ This was done by adding two arguments:
 I have modified the selection of next moves in the A* to include diagonal motions:
 
 The actions includes four new ones (diagonal) with cost `sqrt(2)`:
-```
-    NORTHWEST = (-1, -1, 1.41421)
-    SOUTHWEST = (1, -1, 1.41421)
-    NORTHEAST = (-1,1,1.41421)
-    SOUTHEAST = (1,1,1.41421)
-```
+
+`NORTHWEST = (-1, -1, 1.41421)`
+
+`SOUTHWEST = (1, -1, 1.41421)`
+
+`NORTHEAST = (-1,1,1.41421) `
+
+`SOUTHEAST = (1,1,1.41421)`
 
 and in the `valid_actions` I have added:
 
@@ -129,9 +135,11 @@ I used collinearity to prune the path. The prunning algorithm looks like this:
 ```
     def prune_path(self,path):
         def point(p):
-            return np.array([p[0], p[1], 1.]).reshape(1, -1)
+            return np.array([p[0], p[1],
+             1.]).reshape(1, -1)
 
-        def collinearity_check(p1, p2, p3, epsilon=1e-6):
+        def collinearity_check(p1, p2,
+         p3, epsilon=1e-6):
             m = np.concatenate((p1, p2, p3), 0)
             det = np.linalg.det(m)
             return abs(det) < epsilon
@@ -143,7 +151,8 @@ I used collinearity to prune the path. The prunning algorithm looks like this:
         pruned_path.append(p1)
         for i in range(2,len(path)):
             p3 = path[i]
-            if collinearity_check(point(p1),point(p2),point(p3)):
+            if collinearity_check(point(p1),point(p2),
+            point(p3)):
                 p2 = p3
             else:
                 pruned_path.append(p2)
@@ -155,7 +164,7 @@ I used collinearity to prune the path. The prunning algorithm looks like this:
         return pruned_path
 ```
 
-In collinearity I select continuous groups of points and (3) to see if the belong in a line or close to a line. If they can be connected to a line I replace the two waypoints with a single on (longer) and continue the search to see if I can add more way points to the same line. With this change I managed to have a relatively smooth route:
+In collinearity I select continuous groups of points (3 in each step) to see if they belong in a line or approximately belong to a line. If they can be connected to a line I replace the two waypoints with a single one (longer) and continue the search to see if I can add more way points to the same line. With this change I managed to have a relatively smooth route:
 
 ![img](path.png)
 
@@ -165,13 +174,21 @@ In collinearity I select continuous groups of points and (3) to see if the belon
 
 ### Execute the flight
 #### 1. Does it work?
-I tried the suggested location of ` (longitude = -122.402224, latitude = 37.797330)` and the drone guided itself into it. To go back just run from there:
+I tried the suggested location of ` (longitude = -122.402224, latitude = 37.797330)` and the drone guided itself into it. To go back just run from the goal position:
 
 ```
-python motion_planning.py --lat 37.792480 --lon -122.397450
+python motion_planning.py --lat 37.792480 --lon
+ -122.397450
 ```
 
-You can run any location you like from there using the parameters `lat,lon`.
+You can run any location you like by using the parameters `lat,lon`.
+
+**Also**, note that the planning search takes more than 5 seconds which is the default time out limit. I changed the time out to `40` seconds:
+
+```
+    conn = MavlinkConnection('tcp:{0}:
+    {1}'.format(args.host, args.port),timeout=40)
+```
 
 ### Extra Challenges: Real World Planning 
 

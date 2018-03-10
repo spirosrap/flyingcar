@@ -49,7 +49,7 @@ Since if we are on a cell on a grid there are available 8 actions (4 additional 
 
 I used this table below to help me complete the code (we're in the position `(0,0)`):
 
-![img](./grid.jpg)
+![img](grid.JPG)
 
 For example to remove the `SOUTHEAST` point, notice that it is the `1,1` on the scheme above. So if in the `grid[x+1,y+1] = 1` is an obstacle OR if that position is out of the available map, I remove this action.
 

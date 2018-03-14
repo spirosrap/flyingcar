@@ -112,7 +112,6 @@ class MotionPlanning(Drone):
 
     def plan_path(self):
         self.flight_state = States.PLANNING
-        print("Searching for a path ...")
         TARGET_ALTITUDE = 10
         SAFETY_DISTANCE = 7
 
@@ -121,11 +120,21 @@ class MotionPlanning(Drone):
         self.target_position[2] = TARGET_ALTITUDE
 
         square =[]
-        for i in np.arange(0.0, 40.0, 0.25):
-            a = [int(13*np.cos(i)),int(13*np.sin(i)),int(i+1),0]
+        for i in np.arange(0.0, 20.25, 0.25):
+            a = [int(13*np.cos(i)),int(13*np.sin(i)),int(3*i+1),0]
             square.append(a)
+        temp = square[len(square) - 1]
+
+        #BACK:
+        for i in np.arange(20, 3, -0.25):
+            a = [int(13*np.cos(i)),int(13*np.sin(i)),int(3*i - 8),0]
+            square.append(a)
+
+        square = square[:-12]
+
         for s in range(len(square)-1):
             square[s + 1][3] = np.arctan2((square[s + 1][1] - square[s][1]),(square[s + 1][0] - square[s][0]))
+
         self.waypoints = square
         print("waypoints",square)
 

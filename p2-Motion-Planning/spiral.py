@@ -120,73 +120,15 @@ class MotionPlanning(Drone):
 
         self.target_position[2] = TARGET_ALTITUDE
 
-        # TODO: read lat0, lon0 from colliders into floating point values
-        with open("colliders.csv") as myfile:
-            head = [next(myfile) for x in range(2)]
-        latlon = np.fromstring(head[1], dtype='Float64', sep=',')
-        lat0 = latlon[0]
-        lon0 = latlon[1]
-        # TODO: set home position to (lat0, lon0, 0)
-        self.set_home_position(lon0, lat0, 0)
-        # TODO: retrieve current global position
-        global_position = self.global_position
+        square =[]
+        for i in np.arange(0.0, 40.0, 0.25):
+            a = [int(13*np.cos(i)),int(13*np.sin(i)),int(i+1),0]
+            square.append(a)
+        for s in range(len(square)-1):
+            square[s + 1][3] = np.arctan2((square[s + 1][1] - square[s][1]),(square[s + 1][0] - square[s][0]))
+        self.waypoints = square
+        print("waypoints",square)
 
-        # TODO: convert to current local position using global_to_local()
-        current_local_pos = global_to_local(self.global_position,self.global_home)
-        print('global home {0}, position {1}, local position {2}'.format(self.global_home, self.global_position,
-                                                                         self.local_position))
-        print('current local position {0}'.format(current_local_pos))
-        data = np.loadtxt('colliders.csv', delimiter=',', dtype='Float64', skiprows=3)
-        # Read in obstacle map
-
-        # Define a grid for a particular altitude and safety margin around obstacles
-        grid, north_offset, east_offset = create_grid(data, TARGET_ALTITUDE, SAFETY_DISTANCE)
-        # Define starting point on the grid (this is just grid center)
-        print("north offset, east offset",north_offset,east_offset)
-        grid_start = (north_offset, east_offset)
-        # TODO: convert start position to current position rather than map center
-        start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
-
-        # Set goal as some arbitrary position on the grid
-        grid_goal1 = (int(north_offset) + 75, int(east_offset) + 130)
-        # TODO: adapt to set goal as latitude / longitude position and convert
-        # 37.7955 -122.3937
-         #(longitude = -122.402224, latitude = 37.797330)
-        # grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
-        # lon0, lat0, 0
-        # grid_goal = global_to_local((lon0,lat0,0),self.global_home)
-
-        if args.lat != 1000 and args.lon != 1000:
-            lat_goal = args.lat
-            lon_goal = args.lon
-            grid_goal = global_to_local((lon_goal,lat_goal,0),self.global_home)
-        else:
-            print("Default Goal Location")
-            grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
-
-        print("grid_goal",grid_goal)
-        grid_goal = (int(grid_goal[0]+north_offset),int(grid_goal[1]+east_offset))
-        # grid_goal = (int(current_local_pos[0]+north_offset+10), int(current_local_pos[1]+east_offset+10))
-
-        # Run A* to find a path from start to goal
-        # TODO: add diagonal motions with a cost of sqrt(2) to your A* implementation
-        # or move to a different search space such as a graph (not done here)
-
-
-        print('Local Start and Goal: ', start, grid_goal)
-        path, _ = a_star(grid, heuristic, start, grid_goal)
-        # # print(path)
-        # # TODO: prune path to minimize number of waypoints
-        # # TODO (if you're feeling ambitious): Try a different approach altogether!
-        #
-        # Convert path to waypoints
-        pruned = self.prune_path(path)
-        print("pruned path",pruned)
-
-        waypoints = [[p[0] - int(north_offset), p[1] - int(east_offset),
-            TARGET_ALTITUDE,0] for p in pruned]
-        self.waypoints = waypoints
-        print("waypoints",waypoints)
 
         # TODO: send waypoints to sim
         self.send_waypoints()

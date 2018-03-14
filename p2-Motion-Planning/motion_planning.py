@@ -143,12 +143,12 @@ class MotionPlanning(Drone):
         grid, north_offset, east_offset = create_grid(data, TARGET_ALTITUDE, SAFETY_DISTANCE)
         # Define starting point on the grid (this is just grid center)
         print("north offset, east offset",north_offset,east_offset)
-        grid_start = (north_offset, east_offset)
+        grid_start = (-north_offset, -east_offset)
         # TODO: convert start position to current position rather than map center
-        start = (int(current_local_pos[0]+north_offset), int(current_local_pos[1]+east_offset))
+        start = (int(current_local_pos[0]-north_offset), int(current_local_pos[1]-east_offset))
 
         # Set goal as some arbitrary position on the grid
-        grid_goal1 = (int(north_offset) + 75, int(east_offset) + 130)
+        grid_goal1 = (-int(north_offset) + 75, -int(east_offset) + 130)
         # TODO: adapt to set goal as latitude / longitude position and convert
         # 37.7955 -122.3937
          #(longitude = -122.402224, latitude = 37.797330)
@@ -165,7 +165,7 @@ class MotionPlanning(Drone):
             grid_goal = global_to_local((-122.401247,37.796738,0),self.global_home)
 
         print("grid_goal",grid_goal)
-        grid_goal = (int(grid_goal[0]+north_offset),int(grid_goal[1]+east_offset))
+        grid_goal = (int(grid_goal[0]-north_offset),int(grid_goal[1]-east_offset))
         # grid_goal = (int(current_local_pos[0]+north_offset+10), int(current_local_pos[1]+east_offset+10))
 
         # Run A* to find a path from start to goal
@@ -183,7 +183,7 @@ class MotionPlanning(Drone):
         pruned = self.prune_path(path)
         print("pruned path",pruned)
 
-        waypoints = [[p[0] - int(north_offset), p[1] - int(east_offset),
+        waypoints = [[p[0] + int(north_offset), p[1] + int(east_offset),
             TARGET_ALTITUDE,0] for p in pruned]
         self.waypoints = waypoints
         print("waypoints",waypoints)

@@ -38,7 +38,7 @@ def create_grid(data, drone_altitude, safety_distance):
             ]
             grid[obstacle[0]:obstacle[1]+1, obstacle[2]:obstacle[3]+1] = 1
 
-    return grid, -int(north_min), -int(east_min)
+    return grid, int(north_min), int(east_min)
 
 
 # Assume all actions cost the same.

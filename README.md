@@ -15,4 +15,5 @@ Master autonomous flight software engineering skills as you learn about drone ro
 ## Term 1
 * P1: Backyard Flyer - Learn how to control a drone (Introduction)  :heavy_check_mark:
 * P2: 3D Motion Planning - Learn how to control a drone in a complex urban environment :heavy_check_mark:
+* P3: Control of a 3D Quadrotor :construction:
 ## Term 2

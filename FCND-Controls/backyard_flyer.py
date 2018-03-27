@@ -32,7 +32,20 @@ class BackyardFlyer(UnityDrone):
         self.all_waypoints = []
         self.in_mission = True
         self.check_state = {}
-        self.controller = NonlinearController()
+        self.controller = NonlinearController(
+    		z_k_p=1.0,
+    	    z_k_d=1.1,
+    	    x_k_p=1.2,
+    	    x_k_d=1.3,
+    	    y_k_p=1.4,
+    	    y_k_d=1.5,
+    	    k_p_roll=1.6,
+    	    k_p_pitch=1.7,
+    	    k_p_yaw=1.8,
+    	    k_p_p=1.9,
+    	    k_p_q=2.0,
+    	    k_p_r=2.1
+		)
 
         # initial state
         self.flight_state = States.MANUAL
@@ -137,6 +150,7 @@ class BackyardFlyer(UnityDrone):
         print("waypoint transition")
         self.target_position = self.all_waypoints.pop(0)
         print('target position', self.target_position)
+        # self.local_position_target = np.array([0.0, 0.0, -10.0])
         self.local_position_target = np.array((self.target_position[0], self.target_position[1], self.target_position[2]))
         self.flight_state = States.WAYPOINT
         self.waypoint_number = self.waypoint_number+1

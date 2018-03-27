@@ -34,16 +34,31 @@ class ControlsFlyer(UnityDrone):
     		z_k_p=25,
     	    z_k_d=11,
     	    x_k_p=0.8,
-    	    x_k_d=0.84,
-    	    y_k_p=0.82,
-    	    y_k_d=0.86,
-    	    k_p_roll=3.83,
+    	    x_k_d=0.77,
+    	    y_k_p=0.8,
+    	    y_k_d=0.77,
+    	    k_p_roll=3.8,
     	    k_p_pitch=5,
-    	    k_p_yaw=1.5, #1.5
-    	    k_p_p=7,
-    	    k_p_q=5.5,
-    	    k_p_r=5.5
+    	    k_p_yaw=0.5, #1.5
+    	    k_p_p=6,
+    	    k_p_q=8,
+    	    k_p_r=8
 		)
+            #Other configurations: 
+
+    		# z_k_p=25,
+    	    # z_k_d=11,
+    	    # x_k_p=0.8,
+    	    # x_k_d=0.8,
+    	    # y_k_p=0.8,
+    	    # y_k_d=0.8,
+    	    # k_p_roll=3.8,
+    	    # k_p_pitch=5,
+    	    # k_p_yaw=0.5, #1.5
+    	    # k_p_p=7,
+    	    # k_p_q=11,
+    	    # k_p_r=11
+
 
             # 0.5 second
             # =========
@@ -166,7 +181,7 @@ class ControlsFlyer(UnityDrone):
                 #self.all_waypoints = self.calculate_box()
                 (self.position_trajectory,
                  self.time_trajectory,
-                 self.yaw_trajectory) = self.load_test_trajectory(time_mult=0.5)
+                 self.yaw_trajectory) = self.load_test_trajectory(time_mult=1)
                 self.all_waypoints = self.position_trajectory.copy()
                 self.waypoint_number = -1
                 self.waypoint_transition()

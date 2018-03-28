@@ -83,7 +83,6 @@
 		DB49FB4B202A0CC600DED4E6 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		DB49FB4C202A0CC600DED4E6 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
 		DB49FB4D202A0CC600DED4E6 /* LowPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LowPassFilter.h; sourceTree = "<group>"; };
-		DB49FB4E202A0CC600DED4E6 /* Mat3x3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mat3x3D.h; sourceTree = "<group>"; };
 		DB49FB4F202A0CC600DED4E6 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
 		DB49FB50202A0CC600DED4E6 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
 		DB49FB51202A0CC600DED4E6 /* Random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Random.cpp; sourceTree = "<group>"; };
@@ -248,7 +247,6 @@
 				DB49FB4B202A0CC600DED4E6 /* Constants.h */,
 				DB49FB4C202A0CC600DED4E6 /* Geometry.h */,
 				DB49FB4D202A0CC600DED4E6 /* LowPassFilter.h */,
-				DB49FB4E202A0CC600DED4E6 /* Mat3x3D.h */,
 				DB49FB4F202A0CC600DED4E6 /* MathUtils.h */,
 				DB49FB50202A0CC600DED4E6 /* Quaternion.h */,
 				DB49FB51202A0CC600DED4E6 /* Random.cpp */,

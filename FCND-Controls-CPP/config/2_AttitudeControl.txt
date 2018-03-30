@@ -15,10 +15,10 @@ Quad.ControlConfig = QuadControlParams
 QuadControlParams.Trajectory=0,0,-1
 
 # initial conditions
-Quad.InitialPos=0,0,-1
+Quad.InitialPos=0,0,0
 Quad.InitialVel=0,0,0
 Quad.InitialYPR=0,0,0
-Quad.InitialOmega=30,0,0
+Quad.InitialOmega=-1,0,0
 
 # graphing commands
 Commands.1=AddGraph1.Quad.Roll
@@ -37,3 +37,10 @@ kpPosXY = 0
 kpPosZ = 0
 kpVelXY = 0
 kpVelZ = 0
+#kpBank = 20
+#kpPQR = 1,6,1.5
+kpYaw = 0
+#kpBank = 5
+#kpPQR = 23,23,5
+kpBank = -1
+kpPQR = 2,2,10

@@ -11,6 +11,9 @@
 #ifdef __PX4_NUTTX
 #include <systemlib/param/param.h>
 #endif
+#include <iostream>
+
+using std::cout;
 
 void QuadControl::Init()
 {
@@ -76,19 +79,41 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
     cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
     
     //  cout << kappa*collThrustCmd - momentCmd[2];
-    float a = momentCmd[0]/L;
-    float b = momentCmd[1]/L;
-    float c = momentCmd[2]/kappa;
+    float a = momentCmd.x/(L);
+    float b = momentCmd.y/(L);
+    float c = momentCmd.z/kappa;
     float d = collThrustCmd;
+
+    cmd.desiredThrustsN[0] = ((a+b+c+d)/(4.f));
+    cmd.desiredThrustsN[1] = ((-a+b-c+d)/(4.f));
+    cmd.desiredThrustsN[2] = ((-a-b+c+d)/(4.f));
+    cmd.desiredThrustsN[3] = ((a-b-c+d)/(4.f));
     
-    cmd.desiredThrustsN[0] += (a+b+c+d)/4.f;
-    cmd.desiredThrustsN[1] += (-a+b-c+d)/4.f;
-    cmd.desiredThrustsN[2] += (-a-b+c+d)/4.f;
-    cmd.desiredThrustsN[3] += (a-b-c+d)/4.f;
+//    cmd.desiredThrustsN[0] = ((a-b+c+d)/(4.f));
+//    cmd.desiredThrustsN[1] = ((-a-b-c+d)/(4.f));
+//    cmd.desiredThrustsN[2] = ((-a+b+c+d)/(4.f));
+//    cmd.desiredThrustsN[3] = ((a+b-c+d)/(4.f));
+
+    
+//    cmd.desiredThrustsN[0] = (collThrustCmd/(mass*4.f));
+//    cmd.desiredThrustsN[1] = (collThrustCmd)/(mass*4.f);
+//    cmd.desiredThrustsN[2] = (collThrustCmd)/(mass*4.f);
+//    cmd.desiredThrustsN[3] = (collThrustCmd)/(mass*4.f);
+
+    
+    cmd.desiredThrustsN[0] = CONSTRAIN(cmd.desiredThrustsN[0],minMotorThrust,maxMotorThrust);
+    cmd.desiredThrustsN[1] = CONSTRAIN(cmd.desiredThrustsN[1],minMotorThrust,maxMotorThrust);
+    cmd.desiredThrustsN[2] = CONSTRAIN(cmd.desiredThrustsN[2],minMotorThrust,maxMotorThrust);
+    cmd.desiredThrustsN[3] = CONSTRAIN(cmd.desiredThrustsN[3],minMotorThrust,maxMotorThrust);
+
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return cmd;
+}
+
+float QuadControl::clip(float n, float lower, float upper) {
+    return std::max(lower, std::min(n, upper));
 }
 
 V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
@@ -116,15 +141,16 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
     float u_bar_q = kpPQR[1]*q_error;
     float u_bar_r = kpPQR[2]*r_error;
     
-    
     float momentp = u_bar_p*Ixx;
-    float momentq = u_bar_q*Ixx;
-    float momentr = u_bar_r*Ixx;
+    float momentq = u_bar_q*Iyy;
+    float momentr = u_bar_r*Izz;
     
-    momentCmd = V3F(momentp, momentq, momentr);
-
-  
-
+    momentCmd.x = momentp;
+    momentCmd.y = momentq;
+    momentCmd.z = momentr;
+    if (pqrCmd[0] != 0 or pqrCmd[1] != 0 or pqrCmd[2] != 0){
+        cout << "LASDLKJSAD";
+    }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return momentCmd;
@@ -153,11 +179,31 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
   Mat3x3F R = attitude.RotationMatrix_IwrtB();
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+    float b_x_a = R(0,2);
+    float b_y_a = R(1,2);
+    float R33 = R(2,2);
+    float R21 = R(1,0);
+    float R22 = R(1,1);
+    float R12 = R(0,1);
+    float R11 = R(0,0);
+    
+    float b_x_c_target = accelCmd[0]/(collThrustCmd/mass);
+    float b_y_c_target = accelCmd[1]/(collThrustCmd/mass);
+    
+    float b_dot_x_c = kpBank*(b_x_c_target - b_x_a);
+    float b_dot_y_c = kpBank*(b_y_c_target - b_y_a);
+    
+    float p_c = (1/R33)*(R21*b_dot_x_c - R11*b_dot_y_c);
+    float q_c = (1/R33)*(R22*b_dot_x_c - R12*b_dot_y_c);
 
-
-
+    pqrCmd.x = p_c;
+    pqrCmd.y = q_c;
+    pqrCmd.z = 0;
+    if(accelCmd.x != 0 or accelCmd.y != 0 or accelCmd.z != 0){
+        cout << "accel";
+    }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-
+    
   return pqrCmd;
 }
 

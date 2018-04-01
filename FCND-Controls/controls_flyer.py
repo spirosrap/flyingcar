@@ -37,14 +37,14 @@ class ControlsFlyer(UnityDrone):
     	    x_k_d=0.77,
     	    y_k_p=0.8,
     	    y_k_d=0.77,
-    	    k_p_roll=3.8,
+    	    k_p_roll=5,
     	    k_p_pitch=5,
     	    k_p_yaw=0.5, #1.5
     	    k_p_p=6,
     	    k_p_q=8,
     	    k_p_r=8
 		)
-            #Other configurations: 
+            #Other configurations:
 
     		# z_k_p=25,
     	    # z_k_d=11,

@@ -73,32 +73,26 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 
     ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
     
-    cmd.desiredThrustsN[0] = mass * 9.81f / 4.f ; // front left
-    cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
-    cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
-    cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
+//    cmd.desiredThrustsN[0] = mass * 9.81f / 4.f ; // front left
+//    cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
+//    cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
+//    cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
     
     //  cout << kappa*collThrustCmd - momentCmd[2];
-    float a = momentCmd.x/(L);
-    float b = momentCmd.y/(L);
+    float a = momentCmd.x/(L);//(L*(1.414213562373095));
+    float b = momentCmd.y/(L);//(L*(1.414213562373095));
     float c = momentCmd.z/kappa;
     float d = collThrustCmd;
 
     cmd.desiredThrustsN[0] = ((a+b+c+d)/(4.f));
-    cmd.desiredThrustsN[1] = ((-a+b-c+d)/(4.f));
-    cmd.desiredThrustsN[2] = ((-a-b+c+d)/(4.f));
-    cmd.desiredThrustsN[3] = ((a-b-c+d)/(4.f));
+    cmd.desiredThrustsN[3] = ((-a+b-c+d)/(4.f));
+    cmd.desiredThrustsN[1] = ((-a-b+c+d)/(4.f));
+    cmd.desiredThrustsN[2] = ((a-b-c+d)/(4.f));
     
-//    cmd.desiredThrustsN[0] = ((a-b+c+d)/(4.f));
-//    cmd.desiredThrustsN[1] = ((-a-b-c+d)/(4.f));
-//    cmd.desiredThrustsN[2] = ((-a+b+c+d)/(4.f));
-//    cmd.desiredThrustsN[3] = ((a+b-c+d)/(4.f));
-
-    
-//    cmd.desiredThrustsN[0] = (collThrustCmd/(mass*4.f));
-//    cmd.desiredThrustsN[1] = (collThrustCmd)/(mass*4.f);
-//    cmd.desiredThrustsN[2] = (collThrustCmd)/(mass*4.f);
-//    cmd.desiredThrustsN[3] = (collThrustCmd)/(mass*4.f);
+//    cmd.desiredThrustsN[0] = (collThrustCmd/(4.f));
+//    cmd.desiredThrustsN[1] = (collThrustCmd)/(4.f);
+//    cmd.desiredThrustsN[2] = (collThrustCmd)/(4.f);
+//    cmd.desiredThrustsN[3] = (collThrustCmd)/(4.f);
 
     
     cmd.desiredThrustsN[0] = CONSTRAIN(cmd.desiredThrustsN[0],minMotorThrust,maxMotorThrust);
@@ -141,18 +135,18 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
     float u_bar_q = kpPQR[1]*q_error;
     float u_bar_r = kpPQR[2]*r_error;
     
-    float momentp = u_bar_p*Ixx;
-    float momentq = u_bar_q*Iyy;
-    float momentr = u_bar_r*Izz;
+    float momentp = u_bar_p*Ixx;// + (Izz-Iyy)*pqrCmd[2]*pqrCmd[1];
+    float momentq = u_bar_q*Iyy;// + (Ixx-Izz)*pqrCmd[0]*pqrCmd[2];
+    float momentr = u_bar_r*Izz;// + (Iyy-Ixx)*pqrCmd[1]*pqrCmd[0];
     
     momentCmd.x = momentp;
     momentCmd.y = momentq;
     momentCmd.z = momentr;
-    if (pqrCmd[0] != 0 or pqrCmd[1] != 0 or pqrCmd[2] != 0){
-        cout << "LASDLKJSAD";
-    }
+//    if (pqrCmd[0] != 0 or pqrCmd[1] != 0 or pqrCmd[2] != 0){
+//        cout << "LASDLKJSAD";
+//    }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-
+    
   return momentCmd;
 }
 
@@ -187,8 +181,8 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
     float R12 = R(0,1);
     float R11 = R(0,0);
     
-    float b_x_c_target = accelCmd[0]/(collThrustCmd/mass);
-    float b_y_c_target = accelCmd[1]/(collThrustCmd/mass);
+    float b_x_c_target = accelCmd[0]*mass/(collThrustCmd);
+    float b_y_c_target = accelCmd[1]*mass/(collThrustCmd);
     
     float b_dot_x_c = kpBank*(b_x_c_target - b_x_a);
     float b_dot_y_c = kpBank*(b_y_c_target - b_y_a);
@@ -203,7 +197,9 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
         cout << "accel";
     }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-    
+//    pqrCmd.x = 0;
+//    pqrCmd.y = 0;
+//    pqrCmd.z = 0;
   return pqrCmd;
 }
 

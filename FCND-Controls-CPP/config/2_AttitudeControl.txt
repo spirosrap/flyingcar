@@ -12,7 +12,7 @@ Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
 
 # reference trajectory (just the starting position)
-QuadControlParams.Trajectory=0,0,-2
+QuadControlParams.Trajectory=0,0,-1
 
 # initial conditions
 Quad.InitialPos=0,0,-1
@@ -37,8 +37,6 @@ kpPosXY = 0
 kpPosZ = 0
 kpVelXY = 0
 kpVelZ = 0
-#kpBank = 20
-#kpPQR = 1,6,1.5
 kpYaw = 0
-kpBank = 10
-kpPQR = 63,63,5
+kpBank = 16
+kpPQR = 120,0,0

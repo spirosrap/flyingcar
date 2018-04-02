@@ -310,8 +310,8 @@ float QuadControl::YawControl(float yawCmd, float yaw)
 
   float yawRateCmd=0;
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-//    yawCmd = CONSTRAIN(yawCmd, -maxTiltAngle, maxTiltAngle);
-//  yawRateCmd = -kpYaw*(yawCmd - yaw);
+  yawCmd = CONSTRAIN(yawCmd, -maxTiltAngle, maxTiltAngle);
+  yawRateCmd = -kpYaw*(yawCmd - yaw);
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 

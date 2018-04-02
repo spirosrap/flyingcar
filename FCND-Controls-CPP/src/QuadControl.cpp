@@ -239,10 +239,8 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
 //    v = -CONSTRAIN(-v,-maxDescentRate,maxAscentRate);
 //    thrust = -v*mass/dt;
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-    if (accelZ > 0) {
-        accelZ = 0;
-    }
-    thrust = abs(accelZ*mass);
+
+    thrust = -accelZ*mass;
   return thrust;
 }
 
@@ -312,7 +310,7 @@ float QuadControl::YawControl(float yawCmd, float yaw)
   float yawRateCmd=0;
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
   yawCmd = CONSTRAIN(yawCmd, -maxTiltAngle, maxTiltAngle);
-  yawRateCmd = -kpYaw*(yawCmd - yaw);
+  yawRateCmd = kpYaw*(yawCmd - yaw);
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 

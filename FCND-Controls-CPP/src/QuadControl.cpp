@@ -234,15 +234,15 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
     
     float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd;
     float accelZ = (u_bar_1 - 9.81f)/b_z;
-//    float v = accelZ*dt;
+
+    //    float v = accelZ*dt;
 //    v = -CONSTRAIN(-v,-maxDescentRate,maxAscentRate);
 //    thrust = -v*mass/dt;
-    if(accelZCmd != 0){
-        cout << "ACCEL";
-    }
-
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-    thrust = -accelZ*mass;
+    if (accelZ > 0) {
+        accelZ = 0;
+    }
+    thrust = abs(accelZ*mass);
   return thrust;
 }
 
@@ -287,9 +287,10 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
     
     desAccel.x = kpPosXY*(posCmd[0] - pos[0]) + kpVelXY*(velCmd[0] - vel[0]) + accelCmd[0];
     desAccel.y = kpPosXY*(posCmd[1] - pos[1]) + kpVelXY*(velCmd[1] - vel[1]) + accelCmd[1];
-    desAccel.x = -CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
-    desAccel.y = -CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
-
+    
+    desAccel.x = -desAccel.x;//CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
+    desAccel.y = -desAccel.y;//CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
+    desAccel.z = 0;
     /////////////////////////////// END STUDENT CODE ////////////////////////////
     
   return desAccel;

@@ -231,8 +231,10 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
     float b_z = R(2,2);
     
     velZCmd = -CONSTRAIN(-velZCmd,-maxDescentRate,maxAscentRate);
-    
-    float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd;
+    float e = posZCmd - posZ;
+    integratedAltitudeError += KiPosZ*e*dt;
+
+    float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd + integratedAltitudeError;
     float accelZ = (u_bar_1 - 9.81f)/b_z;
     if (accelZ > 0){
         accelZ = 0;

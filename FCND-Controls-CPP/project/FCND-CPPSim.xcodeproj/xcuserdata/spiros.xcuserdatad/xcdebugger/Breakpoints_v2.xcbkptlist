@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/QuadControl.cpp"
-            timestampString = "544452830.2392811"
+            timestampString = "544484069.202388"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "112"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "../src/QuadControl.cpp"
-            timestampString = "544452830.239653"
+            timestampString = "544484069.202825"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
@@ -42,6 +42,38 @@
                   </ActionContent>
                </BreakpointActionProxy>
             </Actions>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/QuadControl.cpp"
+            timestampString = "544484069.203144"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, float velZ, Quaternion&lt;float&gt; attitude, float accelZCmd, float dt)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/QuadControl.cpp"
+            timestampString = "544484069.2034121"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, float velZ, Quaternion&lt;float&gt; attitude, float accelZCmd, float dt)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -234,6 +234,9 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
     
     float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd;
     float accelZ = (u_bar_1 - 9.81f)/b_z;
+    if (accelZ > 0){
+        accelZ = 0;
+    }
 
     //    float v = accelZ*dt;
 //    v = -CONSTRAIN(-v,-maxDescentRate,maxAscentRate);

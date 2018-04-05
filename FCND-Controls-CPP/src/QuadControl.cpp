@@ -293,6 +293,9 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
     
     desAccel.x = -desAccel.x;//CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
     desAccel.y = -desAccel.y;//CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
+    desAccel.x = CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
+    desAccel.y = CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
+
     desAccel.z = 0;
     /////////////////////////////// END STUDENT CODE ////////////////////////////
     

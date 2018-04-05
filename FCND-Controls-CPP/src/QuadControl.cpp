@@ -79,8 +79,8 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 //    cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
     
     //  cout << kappa*collThrustCmd - momentCmd[2];
-    float a = momentCmd.x/(L);//(L*(1.414213562373095));
-    float b = momentCmd.y/(L);//(L*(1.414213562373095));
+    float a = momentCmd.x/(L*(1.414213562373095/2));//(L*(1.414213562373095));
+    float b = momentCmd.y/(L*(1.414213562373095/2));//(L*(1.414213562373095));
     float c = momentCmd.z/kappa;
     float d = collThrustCmd;
 

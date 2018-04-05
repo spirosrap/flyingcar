@@ -8,9 +8,25 @@
          <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/QuadControl.cpp"
+            timestampString = "544651098.188987"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "../src/QuadControl.cpp"
-            timestampString = "544635649.374802"
+            timestampString = "544651098.1901031"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
@@ -26,22 +42,6 @@
                   </ActionContent>
                </BreakpointActionProxy>
             </Actions>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../src/QuadControl.cpp"
-            timestampString = "544635649.3751709"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
-            landmarkName = "QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, float velZ, Quaternion&lt;float&gt; attitude, float accelZCmd, float dt)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

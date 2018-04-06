@@ -31,81 +31,19 @@ class ControlsFlyer(UnityDrone):
     def __init__(self, connection):
         super().__init__(connection)
         self.controller = NonlinearController(
-    		z_k_p=25,
-    	    z_k_d=11,
-    	    x_k_p=0.8,
-    	    x_k_d=0.77,
-    	    y_k_p=0.8,
-    	    y_k_d=0.77,
-    	    k_p_roll=5,
-    	    k_p_pitch=5,
-    	    k_p_yaw=0.5, #1.5
-    	    k_p_p=6,
-    	    k_p_q=8,
-    	    k_p_r=8
+            z_k_p=18,     # kpPosZ
+            z_k_d=6.8,     # kpVelZ
+            x_k_p=2.6,    # kpPosXY
+            x_k_d=1.7,   # kpVelXY
+            y_k_p=2.6,    # kpPosXY
+            y_k_d=1.7,   # kpVelXY
+            k_p_roll=5.4,   # kpBank
+            k_p_pitch=5.4,  # kpBank
+            k_p_yaw=1,  # kpYaw
+            k_p_p=12,      # kpPQR[0]
+            k_p_q=12,      # kpPQR[1]
+            k_p_r=4.5       # kpPQR[2]
 		)
-            #Other configurations:
-
-    		# z_k_p=25,
-    	    # z_k_d=11,
-    	    # x_k_p=0.8,
-    	    # x_k_d=0.8,
-    	    # y_k_p=0.8,
-    	    # y_k_d=0.8,
-    	    # k_p_roll=3.8,
-    	    # k_p_pitch=5,
-    	    # k_p_yaw=0.5, #1.5
-    	    # k_p_p=7,
-    	    # k_p_q=11,
-    	    # k_p_r=11
-
-
-            # 0.5 second
-            # =========
-    		# z_k_p=25,
-    	    # z_k_d=11,
-    	    # x_k_p=0.8,
-    	    # x_k_d=0.84,
-    	    # y_k_p=0.82,
-    	    # y_k_d=0.86,
-    	    # k_p_roll=3.83,
-    	    # k_p_pitch=5,
-    	    # k_p_yaw=1.5, #1.5
-    	    # k_p_p=7,
-    	    # k_p_q=5.5,
-    	    # k_p_r=5.5
-
-            # 0.5 second
-            # =========
-    		# z_k_p=25,
-    	    # z_k_d=11,
-    	    # x_k_p=0.8,
-    	    # x_k_d=0.8,
-    	    # y_k_p=0.8,
-    	    # y_k_d=0.8,
-    	    # k_p_roll=3.83,
-    	    # k_p_pitch=5,
-    	    # k_p_yaw=1.5, #1.5
-    	    # k_p_p=4.6,
-    	    # k_p_q=4.0,
-    	    # k_p_r=4.0
-
-
-            # 1 second
-            # =========
-    		# z_k_p=25,
-    	    # z_k_d=11,
-    	    # x_k_p=0.8,
-    	    # x_k_d=0.8,
-    	    # y_k_p=0.8,
-    	    # y_k_d=0.8,
-    	    # k_p_roll=4.6,
-    	    # k_p_pitch=4.7,
-    	    # k_p_yaw=0.5,
-    	    # k_p_p=4.9,
-    	    # k_p_q=4.0,
-    	    # k_p_r=4.1
-
         self.target_position = np.array([0.0, 0.0, 0.0])
         self.all_waypoints = []
         self.in_mission = True

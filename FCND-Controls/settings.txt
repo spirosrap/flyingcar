@@ -1,0 +1,45 @@
+BETTER:
+--------
+
+z_k_p=18,     # kpPosZ
+z_k_d=6.8,     # kpVelZ
+x_k_p=2.6,    # kpPosXY
+x_k_d=1.7,   # kpVelXY
+y_k_p=2.6,    # kpPosXY
+y_k_d=1.7,   # kpVelXY
+k_p_roll=5.4,   # kpBank
+k_p_pitch=5.4,  # kpBank
+k_p_yaw=1,  # kpYaw
+k_p_p=12,      # kpPQR[0]
+k_p_q=12,      # kpPQR[1]
+k_p_r=4.5       # kpPQR[2]
+
+BETTER:
+--------
+z_k_p=18,     # kpPosZ
+z_k_d=6.8,     # kpVelZ
+x_k_p=2.8,    # kpPosXY
+x_k_d=1.9,   # kpVelXY
+y_k_p=2.8,    # kpPosXY
+y_k_d=1.9,   # kpVelXY
+k_p_roll=5.4,   # kpBank
+k_p_pitch=5.4,  # kpBank
+k_p_yaw=0.5,  # kpYaw
+k_p_p=17,      # kpPQR[0]
+k_p_q=17,      # kpPQR[1]
+k_p_r=5       # kpPQR[2]
+
+BETTER:
+--------
+z_k_p=18,     # kpPosZ
+  z_k_d=6.8,     # kpVelZ
+  x_k_p=2.8,    # kpPosXY
+  x_k_d=1.8,   # kpVelXY
+  y_k_p=2.8,    # kpPosXY
+  y_k_d=1.8,   # kpVelXY
+  k_p_roll=5.5,   # kpBank
+  k_p_pitch=5.5,  # kpBank
+  k_p_yaw=0.5,  # kpYaw
+  k_p_p=9,      # kpPQR[0]
+  k_p_q=9,      # kpPQR[1]
+  k_p_r=5       # kpPQR[2]

@@ -162,8 +162,8 @@ class NonlinearController(object):
         R12 = e[0][1]
         R11 = e[0][0]
 
-        b_x_c_target = acceleration_cmd[0]/thrust_cmd
-        b_y_c_target = acceleration_cmd[1]/thrust_cmd
+        b_x_c_target = acceleration_cmd[0]*DRONE_MASS_KG/thrust_cmd
+        b_y_c_target = acceleration_cmd[1]*DRONE_MASS_KG/thrust_cmd
 
         b_dot_x_c = self.k_p_roll*(b_x_c_target - b_x_a)
         b_dot_y_c = self.k_p_pitch*(b_y_c_target - b_y_a)

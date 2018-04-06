@@ -187,7 +187,7 @@ CPP:
 
 ### **Rubric 6**:Implement yaw control in python and C++. The controller can be a linear/proportional heading controller to yaw rate commands (non-linear transformation not required).
 
-It's control through the reactive moment command and that effects and that command only effects yaw. I used a linear transformation:
+Yaw control is control through the reactive moment command and that command only effects yaw. I used a linear transformation:
 
 Python:
 
@@ -209,7 +209,7 @@ As you can see below the thrust and moment commands have been used to calculate 
 
 ```
   1)collThrustCmd = f1 + f2 + f3 + f4;
-  2)momentCmd.x = l * (f1 + f4 - f2 - f3); // l = L / (2 * sqrt(2)) - perpendicular distance to axes
+  2)momentCmd.x = l * (f1 + f4 - f2 - f3); // l = L*sqrt(2)/2) - perpendicular distance to axes
   3)momentCmd.y = l * (f1 + f2 - f3 - f4);
   4)momentCmd.z = kappa * f1 - kappa * f2 + kappa * f3 - kappa * f4;
 ```
@@ -267,6 +267,12 @@ To provide a more accurate trajectory I used the following parameters in a simil
 ```
 and I used `time_mult=1`. The trajectory is also within margins with `time_mult=0.75`.
 
+The errors in time:
+
+![img](errors.png)
+
+There are two spikes as you can see in "horizontal error vs time" which I couldn't eliminate.
+
 
 ### **Rubric 9**: Your C++ controller is successfully able to fly the provided test trajectory and visually passes inspection of the scenarios leading up to the test trajectory.Ensure that in each scenario the drone looks stable and performs the required task. Specifically check that the student's controller is able to handle the non-linearities of scenario 4 (all three drones in the scenario should be able to perform the required task with the same control gains used).
 
@@ -280,7 +286,7 @@ Simulation #104 (../config/5_TrajectoryFollow.txt)
 Simulation #105 (../config/5_TrajectoryFollow.txt)
 PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds
 ```
-
+![img](./nonidealities.gif)
 ![img](./trajectory.gif)
 
 

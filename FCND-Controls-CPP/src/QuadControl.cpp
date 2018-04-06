@@ -73,12 +73,6 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 
     ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
     
-//    cmd.desiredThrustsN[0] = mass * 9.81f / 4.f ; // front left
-//    cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
-//    cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
-//    cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
-    
-    //  cout << kappa*collThrustCmd - momentCmd[2];
     float a = momentCmd.x/(L*(1.414213562373095/2));//(L*(1.414213562373095));
     float b = momentCmd.y/(L*(1.414213562373095/2));//(L*(1.414213562373095));
     float c = momentCmd.z/kappa;
@@ -88,18 +82,12 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
     cmd.desiredThrustsN[1] = ((-a+b-c+d)/(4.f));
     cmd.desiredThrustsN[3] = ((-a-b+c+d)/(4.f));
     cmd.desiredThrustsN[2] = ((a-b-c+d)/(4.f));
-    
-//    cmd.desiredThrustsN[0] = (collThrustCmd/(4.f));
-//    cmd.desiredThrustsN[1] = (collThrustCmd)/(4.f);
-//    cmd.desiredThrustsN[2] = (collThrustCmd)/(4.f);
-//    cmd.desiredThrustsN[3] = (collThrustCmd)/(4.f);
 
     
     cmd.desiredThrustsN[0] = CONSTRAIN(cmd.desiredThrustsN[0],minMotorThrust,maxMotorThrust);
     cmd.desiredThrustsN[1] = CONSTRAIN(cmd.desiredThrustsN[1],minMotorThrust,maxMotorThrust);
     cmd.desiredThrustsN[2] = CONSTRAIN(cmd.desiredThrustsN[2],minMotorThrust,maxMotorThrust);
     cmd.desiredThrustsN[3] = CONSTRAIN(cmd.desiredThrustsN[3],minMotorThrust,maxMotorThrust);
-
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -135,16 +123,13 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
     float u_bar_q = kpPQR[1]*q_error;
     float u_bar_r = kpPQR[2]*r_error;
     
-    float momentp = u_bar_p*Ixx;// + (Izz-Iyy)*pqrCmd[2]*pqrCmd[1];
-    float momentq = u_bar_q*Iyy;// + (Ixx-Izz)*pqrCmd[0]*pqrCmd[2];
-    float momentr = u_bar_r*Izz;// + (Iyy-Ixx)*pqrCmd[1]*pqrCmd[0];
+    float momentp = u_bar_p*Ixx;
+    float momentq = u_bar_q*Iyy;
+    float momentr = u_bar_r*Izz;
     
     momentCmd.x = momentp;
     momentCmd.y = momentq;
     momentCmd.z = momentr;
-//    if (pqrCmd[0] != 0 or pqrCmd[1] != 0 or pqrCmd[2] != 0){
-//        cout << "LASDLKJSAD";
-//    }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
     
   return momentCmd;
@@ -220,14 +205,6 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   float thrust = 0;
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-//    e = euler2RM(attitude[0],attitude[1],attitude[2])
-//    b_z = e[2][2]
-//
-//    u_bar_1 = self.z_k_p * (altitude_cmd - altitude) + self.z_k_d*(vertical_velocity_cmd - vertical_velocity) + acceleration_ff
-//    c = (u_bar_1 + GRAVITY)/b_z
-//# print("thrust: ",c)
-//    return np.clip(c,-MAX_THRUST,MAX_THRUST)
-    
     float b_z = R(2,2);
     
     velZCmd = -CONSTRAIN(-velZCmd,-maxDescentRate,maxAscentRate);
@@ -239,13 +216,10 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
     if (accelZ > 0){
         accelZ = 0;
     }
-
-    //    float v = accelZ*dt;
-//    v = -CONSTRAIN(-v,-maxDescentRate,maxAscentRate);
-//    thrust = -v*mass/dt;
+    
+    thrust = -accelZ*mass;
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
-    thrust = -accelZ*mass;
   return thrust;
 }
 
@@ -275,9 +249,6 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
   posCmd.z = pos.z;
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
-//    x_dot_dot_command = self.x_k_p*(local_position_cmd[0] - local_position[0]) + self.x_k_d*(local_velocity_cmd[0] - local_velocity[0]) + acceleration_ff[0]
-//    y_dot_dot_command = self.y_k_p*(local_position_cmd[1] - local_position[1]) + self.y_k_d*(local_velocity_cmd[1] - local_velocity[1]) + acceleration_ff[1]
     
     V3F desAccel;
     
@@ -291,8 +262,8 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
     desAccel.x = kpPosXY*(posCmd[0] - pos[0]) + kpVelXY*(velCmd[0] - vel[0]) + accelCmd[0];
     desAccel.y = kpPosXY*(posCmd[1] - pos[1]) + kpVelXY*(velCmd[1] - vel[1]) + accelCmd[1];
     
-    desAccel.x = -desAccel.x;//CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
-    desAccel.y = -desAccel.y;//CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
+    desAccel.x = -desAccel.x;
+    desAccel.y = -desAccel.y;
     desAccel.x = CONSTRAIN(desAccel.x, -maxAccelXY, maxAccelXY);
     desAccel.y = CONSTRAIN(desAccel.y, -maxAccelXY, maxAccelXY);
 

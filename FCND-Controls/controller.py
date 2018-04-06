@@ -111,13 +111,8 @@ class NonlinearController(object):
 
         x_dot_dot_command = self.x_k_p*(local_position_cmd[0] - local_position[0]) + self.x_k_d*(local_velocity_cmd[0] - local_velocity[0]) + acceleration_ff[0]
         y_dot_dot_command = self.y_k_p*(local_position_cmd[1] - local_position[1]) + self.y_k_d*(local_velocity_cmd[1] - local_velocity[1]) + acceleration_ff[1]
-        # b_x_c = x_dot_dot_command/c
-        # b_y_c = y_dot_dot_command/c
-        # print(local_position_cmd[0],local_position[0])
-        # print(x_dot_dot_command,y_dot_dot_command)
 
         return np.array([np.clip(-x_dot_dot_command,-10,10),np.clip(-y_dot_dot_command,-10,10)])
-        # return np.array([2, 2])
 
     def altitude_control(self, altitude_cmd, vertical_velocity_cmd, altitude, vertical_velocity, attitude, acceleration_ff=0.0):
         """Generate vertical acceleration (thrust) command
@@ -137,7 +132,7 @@ class NonlinearController(object):
 
         u_bar_1 = self.z_k_p * (altitude_cmd - altitude) + self.z_k_d*(vertical_velocity_cmd - vertical_velocity) + acceleration_ff
         c = (u_bar_1 + GRAVITY)/b_z
-        # print("thrust: ",c)
+
         return np.clip(c,-MAX_THRUST,MAX_THRUST)
 
 
@@ -167,11 +162,10 @@ class NonlinearController(object):
 
         b_dot_x_c = self.k_p_roll*(b_x_c_target - b_x_a)
         b_dot_y_c = self.k_p_pitch*(b_y_c_target - b_y_a)
-        # [[p_c],[q_c]] = (1/R33)*np.matmul(np.array([[R21,-R11],[R22,-R12]]),np.array([[b_dot_x_c],[b_dot_y_c]]))
+
         [[p_c],[q_c]] = (1.0/R33)*np.matmul(np.array([[R21,-R11],[R22,-R12]]),np.array([[b_dot_x_c],[b_dot_y_c]]))
 
         return np.array([p_c, q_c])
-        # return np.array([0, 0])
 
     def body_rate_control(self, body_rate_cmd, body_rate):
         """ Generate the roll, pitch, yaw moment commands in the body frame

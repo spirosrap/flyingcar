@@ -1,6 +1,7 @@
 # Flying car Nanodegree
 ## Building a Controller: The Write up
 
+![img](./controller.png)
 
 ### **Rubric 1**: Implemented body rate control in python and C++. The controller should be a proportional controller on body rates to commanded moments. The controller should take into account the moments of inertia of the drone when calculating the commanded moments.
 
@@ -243,5 +244,17 @@ float a = momentCmd.x/(L*(1.414213562373095/2));//(L*(1.414213562373095));
 
 ### **Rubric 9**: Your C++ controller is successfully able to fly the provided test trajectory and visually passes inspection of the scenarios leading up to the test trajectory.Ensure that in each scenario the drone looks stable and performs the required task. Specifically check that the student's controller is able to handle the non-linearities of scenario 4 (all three drones in the scenario should be able to perform the required task with the same control gains used).
 
+The drone in the C++ Project flights correclty the trajectory and passes all tests:
+
+```
+PASS: ABS(Quad1.Pos.X) was less than 0.100000 for at least 1.250000 seconds
+PASS: ABS(Quad2.Pos.X) was less than 0.100000 for at least 1.250000 seconds
+PASS: ABS(Quad2.Yaw) was less than 0.100000 for at least 1.000000 seconds
+Simulation #104 (../config/5_TrajectoryFollow.txt)
+Simulation #105 (../config/5_TrajectoryFollow.txt)
+PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds
+```
+
+![img](./trajectory.gif)
 
 

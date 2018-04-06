@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "../src/QuadControl.cpp"
-            timestampString = "544739600.980149"
+            timestampString = "544744999.517097"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
             landmarkName = "QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)"
             landmarkType = "7">
             <Actions>
@@ -35,11 +35,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/QuadControl.cpp"
-            timestampString = "544739600.981027"
+            timestampString = "544744999.517656"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
             landmarkName = "QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, float velZ, Quaternion&lt;float&gt; attitude, float accelZCmd, float dt)"
             landmarkType = "7">
          </BreakpointContent>

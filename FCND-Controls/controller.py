@@ -133,7 +133,7 @@ class NonlinearController(object):
         u_bar_1 = self.z_k_p * (altitude_cmd - altitude) + self.z_k_d*(vertical_velocity_cmd - vertical_velocity) + acceleration_ff
         c = (u_bar_1 + GRAVITY)/b_z
 
-        return np.clip(c,-MAX_THRUST,MAX_THRUST)
+        return np.clip(c*DRONE_MASS_KG,-MAX_THRUST,MAX_THRUST)
 
 
 

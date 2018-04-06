@@ -240,11 +240,37 @@ float a = momentCmd.x/(L*(1.414213562373095/2));//(L*(1.414213562373095));
 
 ### **Rubric 8**:Your python controller is successfully able to fly the provided test trajectory, meeting the minimum flight performance metrics. For this, your drone must pass the provided evaluation script with the default parameters. These metrics being, your drone flies the test trajectory faster than 20 seconds, the maximum horizontal error is less than 2 meters, and the maximum vertical error is less than 1 meter.
 
+The drone flies correctly the trajectory within the error margins as you can see below:
+
+```
+Maximum Horizontal Error:  1.2300934702378385
+Maximum Vertical Error:  0.7203271772600734
+Mission Time:  5.315563
+Mission Success:  True
+```
+
+To provide a more accurate trajectory I used the following parameters in a similar way for the CPP project:
+
+```
+            z_k_p=18,     # kpPosZ
+            z_k_d=6.8,     # kpVelZ
+            x_k_p=2.6,    # kpPosXY
+            x_k_d=1.7,   # kpVelXY
+            y_k_p=2.6,    # kpPosXY
+            y_k_d=1.7,   # kpVelXY
+            k_p_roll=5.4,   # kpBank
+            k_p_pitch=5.4,  # kpBank
+            k_p_yaw=1,  # kpYaw
+            k_p_p=12,      # kpPQR[0]
+            k_p_q=12,      # kpPQR[1]
+            k_p_r=4.5       # kpPQR[2]
+```
+and I used `time_mult=1`. The trajectory is also within margins with `time_mult=0.75`.
 
 
 ### **Rubric 9**: Your C++ controller is successfully able to fly the provided test trajectory and visually passes inspection of the scenarios leading up to the test trajectory.Ensure that in each scenario the drone looks stable and performs the required task. Specifically check that the student's controller is able to handle the non-linearities of scenario 4 (all three drones in the scenario should be able to perform the required task with the same control gains used).
 
-The drone in the C++ Project flights correclty the trajectory and passes all tests:
+The drone in the C++ Project flights correctly the trajectory and passes all tests:
 
 ```
 PASS: ABS(Quad1.Pos.X) was less than 0.100000 for at least 1.250000 seconds

@@ -3,6 +3,12 @@
 
 ![img](./controller.png)
 
+For the python program run:
+
+```
+python controls_flyer.py
+```
+
 ### **Rubric 1**: Implemented body rate control in python and C++. The controller should be a proportional controller on body rates to commanded moments. The controller should take into account the moments of inertia of the drone when calculating the commanded moments.
 
 
@@ -241,6 +247,14 @@ float a = momentCmd.x/(L*(1.414213562373095/2));//(L*(1.414213562373095));
 ### **Rubric 8**:Your python controller is successfully able to fly the provided test trajectory, meeting the minimum flight performance metrics. For this, your drone must pass the provided evaluation script with the default parameters. These metrics being, your drone flies the test trajectory faster than 20 seconds, the maximum horizontal error is less than 2 meters, and the maximum vertical error is less than 1 meter.
 
 The drone flies correctly the trajectory within the error margins as you can see below:
+
+To run the program:
+
+```
+python controls_flyer.py
+```
+
+![img](python.gif)
 
 ```
 Maximum Horizontal Error:  1.2300934702378385

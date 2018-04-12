@@ -155,7 +155,7 @@ class ControlsFlyer(UnityDrone):
     def calculate_box(self):
         cp = self.local_position
         cp[2] = 0
-        local_waypoints = [cp + [1.0, 0.0, 0.5], cp + [1.0, 1.0, 0.5], cp + [0.0, 1.0, 0.5], cp + [0.0, 0.0, 0.5]]
+        local_waypoints = [cp + [0.2, 0.0, 0.3], cp + [0.2, 0.2, 0.3], cp + [0.0, 0.2, 0.3], cp + [0.0, 0.0, 0.3]]
         return local_waypoints
 
     def arming_transition(self):

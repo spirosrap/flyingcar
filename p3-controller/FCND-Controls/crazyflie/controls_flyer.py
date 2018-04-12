@@ -119,11 +119,11 @@ class ControlsFlyer(UnityDrone):
             self.takeoff_transition()
         if self.flight_state == States.TAKEOFF:
             if -1.0 * self.local_position[2] > 0.95 * self.target_position[2]:
-                self.all_waypoints = self.calculate_box()
+                # self.all_waypoints = self.calculate_box()
                 (self.position_trajectory,
                  self.time_trajectory,
                  self.yaw_trajectory) = self.load_test_trajectory(time_mult=1)
-                # self.all_waypoints = self.position_trajectory.copy()
+                self.all_waypoints = self.position_trajectory.copy()
                 self.waypoint_number = -1
                 self.waypoint_transition()
         elif self.flight_state == States.WAYPOINT:

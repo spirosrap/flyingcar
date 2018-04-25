@@ -48,4 +48,5 @@ public:
 
   // integral control
   float integratedAltitudeError;
+    float alt_previous_error;
 };

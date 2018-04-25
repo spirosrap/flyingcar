@@ -21,6 +21,7 @@ void QuadControl::Init()
 
   // variables needed for integral control
   integratedAltitudeError = 0;
+  alt_previous_error = 0;
     
 #ifndef __PX4_NUTTX
   // Load params from simulator parameter system
@@ -115,24 +116,14 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
   V3F momentCmd;
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-    float p_error = pqrCmd[0] - pqr[0];
-    float q_error = pqrCmd[1] - pqr[1];
-    float r_error = pqrCmd[2] - pqr[2];
     
-    float u_bar_p = kpPQR[0]*p_error;
-    float u_bar_q = kpPQR[1]*q_error;
-    float u_bar_r = kpPQR[2]*r_error;
+    V3F error = pqrCmd -pqr;
+    V3F ubar = kpPQR * error;
+    V3F moments = ubar * V3F(Ixx,Iyy,Izz);
     
-    float momentp = u_bar_p*Ixx;
-    float momentq = u_bar_q*Iyy;
-    float momentr = u_bar_r*Izz;
-    
-    momentCmd.x = momentp;
-    momentCmd.y = momentq;
-    momentCmd.z = momentr;
   /////////////////////////////// END STUDENT CODE ////////////////////////////
     
-  return momentCmd;
+  return moments;
 }
 
 // returns a desired roll and pitch rate 
@@ -166,9 +157,15 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
     float R12 = R(0,1);
     float R11 = R(0,0);
     
-    float b_x_c_target = accelCmd[0]*mass/(collThrustCmd);
-    float b_y_c_target = accelCmd[1]*mass/(collThrustCmd);
+    float b_x_c_target = CONSTRAIN(accelCmd[0]*mass/(collThrustCmd),-maxTiltAngle, maxTiltAngle);
+    float b_y_c_target = CONSTRAIN(accelCmd[1]*mass/(collThrustCmd),-maxTiltAngle, maxTiltAngle);
     
+    if (collThrustCmd < 0)
+    {
+        b_x_c_target = 0;
+        b_y_c_target = 0;
+    }
+
     float b_dot_x_c = kpBank*(b_x_c_target - b_x_a);
     float b_dot_y_c = kpBank*(b_y_c_target - b_y_a);
     
@@ -207,11 +204,19 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
     float b_z = R(2,2);
     
+//    float z_err = posZCmd - posZ;
+//    float d_err = (z_err - alt_previous_error) / dt;
+    
+//    float d_term = 0.4f * d_err;
+      float d_term = 0;
+//    alt_previous_error = z_err;
+    
+    
     velZCmd = -CONSTRAIN(-velZCmd,-maxDescentRate,maxAscentRate);
     float e = posZCmd - posZ;
     integratedAltitudeError += KiPosZ*e*dt;
 
-    float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd + integratedAltitudeError;
+    float u_bar_1 = kpPosZ*(posZCmd - posZ) + kpVelZ*(velZCmd - velZ) + accelZCmd + integratedAltitudeError + d_term;
     float accelZ = (u_bar_1 - 9.81f)/b_z;
     if (accelZ > 0){
         accelZ = 0;
@@ -288,9 +293,17 @@ float QuadControl::YawControl(float yawCmd, float yaw)
 
   float yawRateCmd=0;
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-  yawCmd = CONSTRAIN(yawCmd, -maxTiltAngle, maxTiltAngle);
-  yawRateCmd = kpYaw*(yawCmd - yaw);
+    
+    float yaw_error = yawRateCmd - yaw;
+    yaw_error = fmodf(yaw_error, F_PI*2.f);
 
+    if (yaw_error >F_PI){
+        yaw_error = yaw_error - 2.0f*F_PI;
+    } else if (yaw_error < -M_PI){
+        yaw_error = yaw_error + 2.0f*F_PI;
+    }
+    yawRateCmd = kpYaw*yaw_error;
+        
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return yawRateCmd;

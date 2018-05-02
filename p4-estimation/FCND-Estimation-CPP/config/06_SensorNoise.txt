@@ -1,0 +1,46 @@
+### STUDENT SECTION
+
+MeasuredStdDev_GPSPosXY = 2
+MeasuredStdDev_AccelXY = .1
+
+### END STUDENT SECTION
+
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
+
+# simulation setup
+Sim.RunMode = Repeat
+Sim.EndTime = 10
+Sim.Vehicle1 = Quad
+
+# Controller selection
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+
+# reference trajectory
+QuadControlParams.Trajectory=0,0,-1
+
+# SigmaThreshold syntax:
+# SigmaThreshold(signal, refValue, sigma, minOKPercent, maxOKPercent, okWindow)
+#   looks at the percentage of points from <signal> being inside the range of [refValue-sigma, refValue+sigma]
+#   if this percentage is inside [minOKPercent,maxOKPercent] for at least okWindow seconds,
+#   the threshold visualization turns green
+
+# graphing commands
+Commands += SetTitle(1,"GPS")
+Commands += Plot(1,Quad.GPS.X,"x position",0,1,1)
+Commands += AddGraph1.SigmaThreshold(Quad.GPS.X, Quad.Pos.X, MeasuredStdDev_GPSPosXY,64,73,2)
+Commands += AddGraph1.LogToFile
+
+Commands += SetTitle(2,"Accelerometer")
+Commands += Plot(2,Quad.IMU.AX,"x accel",.5,.7,1)
+Commands += AddGraph2.SigmaThreshold(Quad.IMU.AX, 0, MeasuredStdDev_AccelXY,64,73,2)
+Commands += AddGraph2.LogToFile
+
+Quad.Sensors = SimIMU, SimGPS, SimMag
+
+# Vehicle-specific config
+[Quad]
+InitialPos=0,0,-1

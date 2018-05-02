@@ -1,0 +1,32 @@
+############################## SLR SIMPLECONFIG ############################
+# # or / or // begins a comment line
+# [X] <- namespace. Any parameter name Y after that becomes "X.Y".
+# Namespace and parameter names are not case-sensitive
+# X=Y defines a parameter 'X' to have value 'Y'
+# Y may be a string, float, or comma-separated list of several numbers
+############################################################################
+
+[Sim] 
+
+# 5ms simulation steps
+Timestep = 0.001 
+
+# Record vehicle state to this file
+# comment out to disable
+LoggedStateFile = log/LoggedState.txt
+
+# Space constraints
+xBounds = -30, 30
+yBounds = -30, 30
+zBounds = -40, 0
+
+# Simulated noise
+gyroNoiseInt = 0.00001
+rotDisturbanceInt = 0.00001
+xyzDisturbanceInt = 0.00001
+rotDisturbanceBW = 2
+xyzDisturbanceBW = 2
+
+[Quad] 
+randomMotorForceMag = .25
+trajectoryLogStepTime = .05

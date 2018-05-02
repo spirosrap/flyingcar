@@ -1,0 +1,45 @@
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
+INCLUDE QuadEstimatorEKF.txt
+
+# BASIC
+Sim.RunMode = Repeat
+Sim.EndTime = 25
+Sim.Vehicle1 = Quad
+
+# QUAD SETUP
+Quad.InitialPos=0,0,-1
+Quad.Sensors = SimIMU, SimMag, SimGPS
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+QuadControlParams.Trajectory=traj/Square.txt
+
+######################################
+#                                    #
+# IDEAL SENSORS? IDEAL ESTIMATOR?    #
+#                                    #
+######################################
+
+Quad.UseIdealEstimator = 1
+SimIMU.AccelStd = 0,0,0
+SimIMU.GyroStd = 0,0,0
+
+######################################
+
+# GRAPHING
+Commands += Toggle.ActualTrajectory
+
+Commands += SetTitle(1,"Y Pos/Vel: True vs Predicted")
+Commands += Plot(1,Quad.Pos.Y,"true Y")
+Commands += Plot(1,Quad.Est.Y,"est Y")
+Commands += Plot(1,Quad.Vel.Y,"true vY")
+Commands += Plot(1,Quad.Est.VY,"est vY")
+
+Commands += SetTitle(2,"Pos error vs Z std")
+Commands += AddGraph2.Quad.Est.E.Pos
+Commands += AddGraph2.Quad.Est.S.Z
+
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Pos,1,20)
+

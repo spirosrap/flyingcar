@@ -1,0 +1,77 @@
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
+INCLUDE QuadEstimatorEKF.txt
+
+# BASIC
+Sim.RunMode = Repeat
+Sim.EndTime = 1
+Sim.Vehicle1 = Quad1
+Sim.Vehicle2 = Quad2
+Sim.Vehicle3 = Quad3
+Sim.Vehicle4 = Quad4
+Sim.Vehicle5 = Quad5
+Sim.Vehicle6 = Quad6
+Sim.Vehicle7 = Quad7
+Sim.Vehicle8 = Quad8
+Sim.Vehicle9 = Quad9
+Sim.Vehicle10 = Quad10
+
+Quad.InitialPos=0,0,-1
+
+# REFERENCE
+QuadControlParams.Trajectory=traj/Square.txt
+
+# CONTROLLER
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+
+# SENSORS
+Quad.Sensors = SimIMU
+
+# GRAPHING
+Commands += Toggle.ActualTrajectory
+
+Commands += SetTitle(1,"Estimated X (10 runs) and X Sigma")
+Commands += AddGraph1.Quad1.Est.E.X,NoLegend
+Commands += AddGraph1.Quad2.Est.E.X,NoLegend
+Commands += AddGraph1.Quad3.Est.E.X,NoLegend
+Commands += AddGraph1.Quad4.Est.E.X,NoLegend
+Commands += AddGraph1.Quad5.Est.E.X,NoLegend
+Commands += AddGraph1.Quad6.Est.E.X,NoLegend
+Commands += AddGraph1.Quad7.Est.E.X,NoLegend
+Commands += AddGraph1.Quad8.Est.E.X,NoLegend
+Commands += AddGraph1.Quad9.Est.E.X,NoLegend
+Commands += AddGraph1.Quad10.Est.E.X,NoLegend
+Commands += Plot(1,Quad1.Est.S.X,"est x std",bold,1,1,1)
+Commands += Plot(1,Quad1.Est.S.X,NoLegend,bold,force,negate,1,1,1)
+
+Commands += SetTitle(2,"Estimated VX (10 runs) and VX Sigma")
+Commands += AddGraph2.Quad1.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad2.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad3.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad4.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad5.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad6.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad7.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad8.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad9.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad10.Est.E.VX,NoLegend
+Commands += Plot(2,Quad1.Est.S.VX,"est vx std",bold,1,1,1)
+Commands += Plot(2,Quad1.Est.S.VX,NoLegend,bold,force,negate,1,1,1)
+
+#
+[Quad1 : Quad]
+[Quad2 : Quad]
+[Quad3 : Quad]
+[Quad4 : Quad]
+[Quad5 : Quad]
+[Quad6 : Quad]
+[Quad7 : Quad]
+[Quad8 : Quad]
+[Quad9 : Quad]
+[Quad10 : Quad]
+
+[]
+_DEBUG.NO_QUAD_GRAPHS=1

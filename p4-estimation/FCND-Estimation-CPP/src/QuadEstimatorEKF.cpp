@@ -108,7 +108,8 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 //  Quaternion<float> dq = Quaternion<float>::FromEuler123_RPY(dtIMU *gyro.x, dtIMU *gyro.y, dtIMU *gyro.z);
 //  qt = qt*dq;
 
-    qt.IntegrateBodyRate(gyro, dtIMU);
+    
+  qt.IntegrateBodyRate(gyro, dtIMU);
   float predictedRoll = qt.Roll();
   float predictedPitch = qt.Pitch();
   ekfState(6) = qt.Yaw();
@@ -215,12 +216,12 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-    float sinPhi = sin(rollEst);
-    float cosPhi = cos(rollEst);
-    float sinTheta = sin(pitchEst);
-    float cosTheta = cos(pitchEst);
-    float sinPsi = sin(ekfState(6));
-    float cosPsi = cos(ekfState(6));
+    float sinPhi = sin(roll);
+    float cosPhi = cos(roll);
+    float sinTheta = sin(pitch);
+    float cosTheta = cos(pitch);
+    float sinPsi = sin(yaw);
+    float cosPsi = cos(yaw);
     
     RbgPrime(0, 0) = -cosTheta * sinPsi;
     RbgPrime(0, 1) = -sinPhi*sinTheta*sinPsi -cosTheta*cosPsi;

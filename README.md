@@ -19,3 +19,4 @@ Master autonomous flight software engineering skills as you learn about drone ro
 * P4: Developing the estimation portion of the controller :heavy_check_mark:
 
 ## Term 2
+Cancelled by Udacity

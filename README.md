@@ -16,6 +16,7 @@ Master autonomous flight software engineering skills as you learn about drone ro
 * P2: 3D Motion Planning - Learn how to control a drone in a complex urban environment :heavy_check_mark:
 * P3: Control of a 3D Quadrotor :heavy_check_mark:
 * P4: Developing the estimation portion of the controller :heavy_check_mark:
+* P5: Implement a flight autopilot for a fixed wing aircraft. :construction:
 
 ## Term 2
 Cancelled by Udacity
